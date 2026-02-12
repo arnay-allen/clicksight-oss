@@ -141,7 +141,7 @@ export function detectDateRangeType(
   endDate: Dayjs
 ): DateRangeConfig {
   const now = dayjs();
-  
+
   // Check if it's today
   if (
     startDate.isSame(now.startOf('day'), 'day') &&
@@ -162,7 +162,7 @@ export function detectDateRangeType(
   // Check if end date is today (for "last N days" patterns)
   if (endDate.isSame(now, 'day') || endDate.isAfter(now.startOf('day'))) {
     const daysDiff = now.diff(startDate, 'days');
-    
+
     if (daysDiff === 6) return { type: 'last_7_days' };
     if (daysDiff === 13) return { type: 'last_14_days' };
     if (daysDiff === 29) return { type: 'last_30_days' };
@@ -217,11 +217,11 @@ export function detectDateRangeType(
  */
 export function getDateRangeLabel(config: DateRangeConfig): string {
   const option = DATE_RANGE_OPTIONS.find((opt) => opt.value === config.type);
-  
+
   if (config.type === 'custom' && config.customStart && config.customEnd) {
     return `${dayjs(config.customStart).format('MMM D, YYYY')} - ${dayjs(config.customEnd).format('MMM D, YYYY')}`;
   }
-  
+
   return option?.label || 'Custom range';
 }
 
@@ -243,4 +243,3 @@ export function deserializeDateRange(json: string): DateRangeConfig {
     return { type: 'last_7_days' };
   }
 }
-

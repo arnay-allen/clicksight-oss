@@ -78,16 +78,16 @@ export async function createDashboard(
  */
 export async function getUserDashboards(userId: string): Promise<Dashboard[]> {
   const query = `
-    SELECT 
-      d.id AS id, 
-      d.name AS name, 
-      d.description AS description, 
-      d.layout AS layout, 
-      d.created_by AS created_by, 
-      d.created_at AS created_at, 
-      d.updated_at AS updated_at, 
+    SELECT
+      d.id AS id,
+      d.name AS name,
+      d.description AS description,
+      d.layout AS layout,
+      d.created_by AS created_by,
+      d.created_at AS created_at,
+      d.updated_at AS updated_at,
       d.is_deleted AS is_deleted,
-      u.name AS created_by_name, 
+      u.name AS created_by_name,
       u.email AS created_by_email
     FROM clicksight.dashboards d
     LEFT JOIN clicksight.users u ON d.created_by = u.id
@@ -104,23 +104,23 @@ export async function getUserDashboards(userId: string): Promise<Dashboard[]> {
  */
 export async function getSharedDashboards(userId: string): Promise<Dashboard[]> {
   const query = `
-    SELECT 
-      d.id AS id, 
-      d.name AS name, 
-      d.description AS description, 
-      d.layout AS layout, 
-      d.created_by AS created_by, 
-      d.created_at AS created_at, 
-      d.updated_at AS updated_at, 
+    SELECT
+      d.id AS id,
+      d.name AS name,
+      d.description AS description,
+      d.layout AS layout,
+      d.created_by AS created_by,
+      d.created_at AS created_at,
+      d.updated_at AS updated_at,
       d.is_deleted AS is_deleted,
-      u.name AS created_by_name, 
+      u.name AS created_by_name,
       u.email AS created_by_email,
       s.permission AS permission
     FROM clicksight.dashboards d
     INNER JOIN clicksight.dashboard_shares s ON d.id = s.dashboard_id
     LEFT JOIN clicksight.users u ON d.created_by = u.id
-    WHERE s.shared_with_user_id = '${userId}' 
-      AND s.is_deleted = 0 
+    WHERE s.shared_with_user_id = '${userId}'
+      AND s.is_deleted = 0
       AND d.is_deleted = 0
     ORDER BY d.updated_at DESC
   `;
@@ -251,7 +251,7 @@ export async function updateChartPosition(
 ): Promise<void> {
   const query = `
     ALTER TABLE clicksight.dashboard_charts
-    UPDATE 
+    UPDATE
       position_x = ${position.x},
       position_y = ${position.y},
       width = ${position.w},
@@ -322,7 +322,7 @@ export async function shareDashboard(
  */
 export async function getDashboardShares(dashboardId: string): Promise<any[]> {
   const query = `
-    SELECT 
+    SELECT
       u.id as id,
       u.email as email,
       u.name as name,
@@ -357,4 +357,3 @@ export async function revokeDashboardShare(dashboardId: string, userId: string):
 
   await queryClickHouse(query);
 }
-

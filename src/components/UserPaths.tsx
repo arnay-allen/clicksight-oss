@@ -30,7 +30,7 @@ function UserPaths() {
     'API_TIME_TAKEN',
     'app_update_handler',
   ]);
-  
+
   // Data state
   const [availableEvents, setAvailableEvents] = useState<string[]>([]);
   const [availableProperties, setAvailableProperties] = useState<string[]>([]);
@@ -51,14 +51,14 @@ function UserPaths() {
     try {
       const events = await getEventNames('app_events');
       setAvailableEvents(events);
-      
+
       // Auto-select common start event if available
       if (events.includes('$app_open') && !startEvent) {
         setStartEvent('$app_open');
       }
-      
+
       // Load common properties for filters
-      const commonProperties = ['pathname', '$os', '$device_type', '$browser', '$screen_width', '$screen_height', 
+      const commonProperties = ['pathname', '$os', '$device_type', '$browser', '$screen_width', '$screen_height',
         '$app_version', '$app_build_number', '$brand', '$browser_version', '$model', '$manufacturer'];
       setAvailableProperties(commonProperties);
     } catch (error: any) {
@@ -72,7 +72,7 @@ function UserPaths() {
   // Load property values for autocomplete
   const loadPropertyValues = async (property: string) => {
     if (propertyValuesByProperty[property]) return; // Already loaded
-    
+
     setLoadingPropertyValues(prev => ({ ...prev, [property]: true }));
     try {
       const values = await getPropertyValues('app_events', property);
@@ -225,7 +225,7 @@ function UserPaths() {
           {/* Start Event Filters */}
           {startEvent && (
             <Col xs={24}>
-              <Card 
+              <Card
                 size="small"
                 title={
                   <Space>
@@ -269,7 +269,7 @@ function UserPaths() {
           {/* End Event Filters */}
           {endEvent && (
             <Col xs={24}>
-              <Card 
+              <Card
                 size="small"
                 title={
                   <Space>
@@ -492,4 +492,3 @@ function UserPaths() {
 }
 
 export default UserPaths;
-

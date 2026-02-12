@@ -112,17 +112,17 @@ function EventTrends() {
     if (eventsByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setEventsLoading(prev => ({ ...prev, [table]: true }));
       const events = await getEventNames(table);
       setEventsByTable(prev => ({ ...prev, [table]: events }));
-      
+
       // Auto-select first event if this is for a specific source
       if (sourceId && events.length > 0) {
-        setDataSources(prev => 
-          prev.map(ds => ds.id === sourceId ? { 
-            ...ds, 
+        setDataSources(prev =>
+          prev.map(ds => ds.id === sourceId ? {
+            ...ds,
             events: [events[0]]
           } : ds)
         );
@@ -140,7 +140,7 @@ function EventTrends() {
     if (propertiesByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setPropertiesLoading(prev => ({ ...prev, [table]: true }));
       // Get first event from table to fetch properties
@@ -200,9 +200,9 @@ function EventTrends() {
   };
 
   const updateFilter = (
-    sourceId: string, 
-    filterIndex: number, 
-    field: keyof PropertyFilter, 
+    sourceId: string,
+    filterIndex: number,
+    field: keyof PropertyFilter,
     value: any
   ) => {
     setDataSources(prev => prev.map(ds => {
@@ -235,17 +235,17 @@ function EventTrends() {
 
   const loadTrendData = async () => {
     // Flatten all source+event combinations
-    const allCombinations: Array<{ 
-      table: string; 
-      eventName: string; 
+    const allCombinations: Array<{
+      table: string;
+      eventName: string;
       filters?: PropertyFilter[];
       filterLogic?: 'AND' | 'OR';
     }> = [];
     dataSources.forEach(ds => {
       if (ds.table && ds.events.length > 0) {
         ds.events.forEach(eventName => {
-          allCombinations.push({ 
-            table: ds.table, 
+          allCombinations.push({
+            table: ds.table,
             eventName,
             filters: ds.filters,
             filterLogic: ds.filterLogic
@@ -253,7 +253,7 @@ function EventTrends() {
         });
       }
     });
-    
+
     if (allCombinations.length === 0) {
       setError('Please select at least one table and event');
       return;
@@ -262,13 +262,13 @@ function EventTrends() {
     try {
       setLoading(true);
       setError('');
-      
+
       const [startDate, endDate] = dateRange;
-      
+
       if (breakdownProperties.length > 0) {
         // Fetch breakdown data for each combination
         const breakdownResults: Record<string, TrendBreakdown[]> = {};
-        
+
         for (const combo of allCombinations) {
           const breakdowns = await getEventTrendWithBreakdown(
             combo.table,
@@ -283,13 +283,13 @@ function EventTrends() {
           const key = `${combo.eventName} (${combo.table})`;
           breakdownResults[key] = breakdowns;
         }
-        
+
         setTrendBreakdowns(breakdownResults);
         setChartData([]); // Clear regular chart data
       } else {
         // Regular trend without breakdown
         const allSourcesData = await Promise.all(
-          allCombinations.map(combo => 
+          allCombinations.map(combo =>
             getEventTrend(
               combo.table,
               combo.eventName,
@@ -304,11 +304,11 @@ function EventTrends() {
 
         // Merge data from all sources into a single array with dates as keys
         const dateMap = new Map<string, any>();
-        
+
         allSourcesData.forEach((sourceData, index) => {
           const combo = allCombinations[index];
           const sourceKey = `${combo.eventName} (${combo.table})`;
-          
+
           sourceData.forEach(item => {
             if (!dateMap.has(item.date)) {
               dateMap.set(item.date, { date: item.date });
@@ -318,7 +318,7 @@ function EventTrends() {
         });
 
         // Convert map to array and sort by date
-        const mergedData = Array.from(dateMap.values()).sort((a, b) => 
+        const mergedData = Array.from(dateMap.values()).sort((a, b) =>
           a.date.localeCompare(b.date)
         );
 
@@ -350,7 +350,7 @@ function EventTrends() {
   };
 
   const updateDataSourceTable = async (id: string, table: string) => {
-    setDataSources(prev => 
+    setDataSources(prev =>
       prev.map(ds => {
         if (ds.id === id) {
           return { ...ds, table, events: [] };
@@ -363,7 +363,7 @@ function EventTrends() {
   };
 
   const updateDataSourceEvents = (id: string, eventNames: string[]) => {
-    setDataSources(prev => 
+    setDataSources(prev =>
       prev.map(ds => ds.id === id ? { ...ds, events: eventNames } : ds)
     );
   };
@@ -377,18 +377,18 @@ function EventTrends() {
     const total = getTotalForSource(sourceKey);
     return chartData.length > 0 ? Math.round((total / chartData.length) * 10) / 10 : 0;
   };
-  
+
   // Get all valid table+event combinations
   const getAllCombinations = () => {
     const combinations: Array<{ id: string; table: string; event: string; sourceIndex: number }> = [];
     dataSources.forEach((ds, index) => {
       if (ds.table && ds.events.length > 0) {
         ds.events.forEach(eventName => {
-          combinations.push({ 
-            id: `${ds.id}-${eventName}`, 
-            table: ds.table, 
-            event: eventName, 
-            sourceIndex: index 
+          combinations.push({
+            id: `${ds.id}-${eventName}`,
+            table: ds.table,
+            event: eventName,
+            sourceIndex: index
           });
         });
       }
@@ -407,11 +407,11 @@ function EventTrends() {
                 <span style={{ fontWeight: 600, fontSize: 16 }}>Data Source</span>
               </div>
             )}
-            
+
             {dataSources.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   size="large"
                   icon={<PlusOutlined />}
                   onClick={addDataSource}
@@ -424,12 +424,12 @@ function EventTrends() {
                 </div>
               </div>
             )}
-            
+
             {dataSources.map((source, index) => (
-              <Card 
-                key={source.id} 
-                size="small" 
-                style={{ 
+              <Card
+                key={source.id}
+                size="small"
+                style={{
                   marginBottom: 12,
                   borderLeft: `4px solid ${CHART_COLORS[index % CHART_COLORS.length]}`
                 }}
@@ -479,9 +479,9 @@ function EventTrends() {
                     />
                   </Col>
                   <Col span={2}>
-                    <Button 
-                      type="text" 
-                      danger 
+                    <Button
+                      type="text"
+                      danger
                       icon={<DeleteOutlined />}
                       onClick={() => removeDataSource(source.id)}
                       disabled={true}
@@ -673,7 +673,7 @@ function EventTrends() {
                   )}
                 </Col>
               </Row>
-              
+
               {loading && (
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <Spin tip="Loading trend data..." />
@@ -681,11 +681,11 @@ function EventTrends() {
               )}
 
               {error && loading === false && (
-                <Alert 
-                  message="Error" 
-                  description={error} 
-                  type="error" 
-                  closable 
+                <Alert
+                  message="Error"
+                  description={error}
+                  type="error"
+                  closable
                   onClose={() => setError('')}
                 />
               )}
@@ -709,8 +709,8 @@ function EventTrends() {
           {getAllCombinations().map((combo, index) => {
             const sourceKey = `${combo.event} (${combo.table})`;
             return (
-              <Card 
-                key={combo.id} 
+              <Card
+                key={combo.id}
                 title={
                   <div>
                     <Tag color={CHART_COLORS[index % CHART_COLORS.length]} style={{ marginRight: 8 }}>
@@ -722,7 +722,7 @@ function EventTrends() {
                     </span>
                   </div>
                 }
-                style={{ 
+                style={{
                   marginBottom: 16,
                   borderLeft: `4px solid ${CHART_COLORS[index % CHART_COLORS.length]}`
                 }}
@@ -757,7 +757,7 @@ function EventTrends() {
 
           <Card title="Multi-Source Event Trends">
             <ResponsiveContainer width="100%" height={500}>
-              <LineChart 
+              <LineChart
                 data={chartData}
                 onMouseMove={(e: any) => {
                   if (e && e.activeTooltipIndex !== undefined) {
@@ -770,7 +770,7 @@ function EventTrends() {
                 <XAxis dataKey="date" />
                 <YAxis tickFormatter={formatYAxis} />
                 <Tooltip formatter={(value: any) => value.toLocaleString()} />
-                <Legend 
+                <Legend
                   onClick={(e: any) => {
                     setHighlightedSource(highlightedSource === e.value ? null : e.value);
                   }}
@@ -805,7 +805,7 @@ function EventTrends() {
         <>
           {Object.entries(trendBreakdowns).map(([eventKey, breakdowns]) => {
             if (breakdowns.length === 0) return null;
-            
+
             // Merge breakdown data for this event
             const dateMap = new Map<string, any>();
             breakdowns.forEach((breakdown) => {
@@ -817,12 +817,12 @@ function EventTrends() {
               });
             });
 
-            const mergedData = Array.from(dateMap.values()).sort((a, b) => 
+            const mergedData = Array.from(dateMap.values()).sort((a, b) =>
               a.date.localeCompare(b.date)
             );
 
             return (
-              <Card 
+              <Card
                 key={eventKey}
                 title={
                   <div>
@@ -844,10 +844,10 @@ function EventTrends() {
                   {breakdowns.map((breakdown, idx) => {
                     const total = breakdown.data.reduce((sum, d) => sum + d.count, 0);
                     const avg = breakdown.data.length > 0 ? total / breakdown.data.length : 0;
-                    
+
                     return (
                       <Col key={breakdown.segmentName} span={8}>
-                        <Card 
+                        <Card
                           size="small"
                           style={{ borderLeft: `4px solid ${CHART_COLORS[idx % CHART_COLORS.length]}` }}
                         >
@@ -919,4 +919,3 @@ function EventTrends() {
 }
 
 export default EventTrends;
-

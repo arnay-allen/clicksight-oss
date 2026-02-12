@@ -10,17 +10,17 @@ export const theme = {
       input: '#16161F',
       hover: '#1E1E2D',
     },
-    
+
     // Accent Colors
     primary: '#9D6CFF',
     primaryHover: '#7B4FE0',
     primaryLight: '#B894FF',
-    
+
     success: '#52C41A',
     error: '#F5222D',
     warning: '#FAAD14',
     info: '#1890FF',
-    
+
     // Text Colors
     text: {
       primary: '#FFFFFF',
@@ -28,14 +28,14 @@ export const theme = {
       muted: '#6B6B7B',
       disabled: '#4A4A5A',
     },
-    
+
     // Border Colors
     border: {
       subtle: '#2A2A3A',
       elevated: '#3A3A4A',
       focus: '#9D6CFF',
     },
-    
+
     // Chart Colors (for multi-line charts)
     chart: [
       '#9D6CFF', // Purple
@@ -50,7 +50,7 @@ export const theme = {
       '#2F54EB', // Indigo
     ],
   },
-  
+
   // Typography
   typography: {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -75,7 +75,7 @@ export const theme = {
       relaxed: 1.75,
     },
   },
-  
+
   // Spacing
   spacing: {
     xs: '4px',
@@ -86,7 +86,7 @@ export const theme = {
     xxl: '48px',
     xxxl: '64px',
   },
-  
+
   // Border Radius
   borderRadius: {
     sm: '4px',
@@ -95,7 +95,7 @@ export const theme = {
     xl: '16px',
     round: '50%',
   },
-  
+
   // Shadows
   shadows: {
     sm: '0 1px 2px rgba(0, 0, 0, 0.3)',
@@ -103,14 +103,14 @@ export const theme = {
     lg: '0 10px 15px rgba(0, 0, 0, 0.5)',
     xl: '0 20px 25px rgba(0, 0, 0, 0.6)',
   },
-  
+
   // Transitions
   transitions: {
     fast: '150ms ease-in-out',
     normal: '250ms ease-in-out',
     slow: '350ms ease-in-out',
   },
-  
+
   // Z-index scale
   zIndex: {
     dropdown: 1000,
@@ -136,4 +136,3 @@ export const hexToRgba = (hex: string, alpha: number): string => {
 };
 
 export default theme;
-

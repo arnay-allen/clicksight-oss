@@ -54,7 +54,7 @@ const Playground: React.FC = () => {
 
     const newHistory = [trimmed, ...queryHistory.filter(q => q !== trimmed)].slice(0, MAX_HISTORY_SIZE);
     setQueryHistory(newHistory);
-    
+
     try {
       localStorage.setItem(QUERY_HISTORY_KEY, JSON.stringify(newHistory));
     } catch (err) {
@@ -95,12 +95,12 @@ const Playground: React.FC = () => {
       queryStatus = 'failure';
       const errorMessage = err.message || 'Query execution failed';
       errorDetails = parseClickHouseError(errorMessage);
-      
+
       // Check if it's a timeout
       if (errorMessage.toLowerCase().includes('timeout') || errorMessage.toLowerCase().includes('max_execution_time')) {
         queryStatus = 'timeout';
       }
-      
+
       setError(errorMessage);
       message.error('Query execution failed');
     } finally {
@@ -259,8 +259,8 @@ const Playground: React.FC = () => {
               )}
             </Card>
 
-            <Tabs 
-              activeKey={activeTab} 
+            <Tabs
+              activeKey={activeTab}
               onChange={setActiveTab}
               tabBarExtraContent={
                 result && result.rows > 0 && (
@@ -315,12 +315,12 @@ const Playground: React.FC = () => {
           {/* Sidebar */}
           <div>
             <Tabs defaultActiveKey="examples">
-              <TabPane 
+              <TabPane
               tab={
                 <span>
                   <FileTextOutlined /> Examples
                 </span>
-              } 
+              }
               key="examples"
             >
               <div style={{ maxHeight: 'calc(100vh - 250px)', overflowY: 'auto' }}>
@@ -330,8 +330,8 @@ const Playground: React.FC = () => {
                     size="small"
                     hoverable
                     onClick={() => loadExample(example.query)}
-                    style={{ 
-                      marginBottom: 12, 
+                    style={{
+                      marginBottom: 12,
                       backgroundColor: '#1f1f1f',
                       cursor: 'pointer',
                     }}
@@ -347,20 +347,20 @@ const Playground: React.FC = () => {
               </div>
             </TabPane>
 
-            <TabPane 
+            <TabPane
               tab={
                 <span>
                   <HistoryOutlined /> History
                 </span>
-              } 
+              }
               key="history"
             >
               <div style={{ maxHeight: 'calc(100vh - 250px)', overflowY: 'auto' }}>
                 {queryHistory.length === 0 ? (
-                  <div style={{ 
-                    textAlign: 'center', 
-                    padding: 40, 
-                    color: '#666' 
+                  <div style={{
+                    textAlign: 'center',
+                    padding: 40,
+                    color: '#666'
                   }}>
                     <HistoryOutlined style={{ fontSize: 32, marginBottom: 12, opacity: 0.5 }} />
                     <div>No query history yet</div>
@@ -370,8 +370,8 @@ const Playground: React.FC = () => {
                   </div>
                 ) : (
                   queryHistory.map((historicalQuery, index) => (
-                    <Tooltip 
-                      key={index} 
+                    <Tooltip
+                      key={index}
                       title="Click to load this query"
                       placement="left"
                     >
@@ -379,23 +379,23 @@ const Playground: React.FC = () => {
                         size="small"
                         hoverable
                         onClick={() => loadFromHistory(historicalQuery)}
-                        style={{ 
-                          marginBottom: 12, 
+                        style={{
+                          marginBottom: 12,
                           backgroundColor: '#1f1f1f',
                           cursor: 'pointer',
                         }}
                       >
-                        <pre style={{ 
-                          margin: 0, 
-                          fontSize: 11, 
+                        <pre style={{
+                          margin: 0,
+                          fontSize: 11,
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                           maxHeight: 100,
                           overflow: 'hidden',
                           fontFamily: 'Monaco, Consolas, monospace',
                         }}>
-                          {historicalQuery.length > 200 
-                            ? historicalQuery.substring(0, 200) + '...' 
+                          {historicalQuery.length > 200
+                            ? historicalQuery.substring(0, 200) + '...'
                             : historicalQuery
                           }
                         </pre>
@@ -536,4 +536,3 @@ const Playground: React.FC = () => {
 };
 
 export default Playground;
-

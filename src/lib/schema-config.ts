@@ -1,9 +1,9 @@
 /**
  * Schema Configuration Module
- * 
+ *
  * This module handles loading and validating the schema configuration file.
  * The schema config maps your ClickHouse event table columns to ClickSight's expected schema.
- * 
+ *
  * Configuration is loaded from schema.config.json (production config, version controlled)
  */
 
@@ -117,7 +117,7 @@ export function validateSchemaConfig(config: SchemaConfig): {
       errors.push('Missing schema.user_identifier');
     } else {
       const { type, column, expression } = config.schema.user_identifier;
-      
+
       if (!type) {
         errors.push('Missing schema.user_identifier.type');
       } else if (type !== 'single' && type !== 'computed') {
@@ -190,7 +190,7 @@ function initializeSchemaConfig(): void {
     console.log(`   Table: ${config.clickhouse.table}`);
     console.log(`   User Identifier: ${config.schema.user_identifier.type}`);
     console.log(`   Properties: ${config.schema.properties.type === 'flat' ? 'Flat Columns' : 'JSON Column'}`);
-    
+
     if (config.schema.properties.type === 'flat' && config.schema.properties.columns) {
       console.log(`   Property Count: ${config.schema.properties.columns.length}`);
     }
@@ -202,4 +202,3 @@ function initializeSchemaConfig(): void {
 
 // Initialize on module load
 initializeSchemaConfig();
-

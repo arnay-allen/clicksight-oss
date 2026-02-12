@@ -79,7 +79,7 @@ const ChartLibrary: React.FC<ChartLibraryProps> = ({
     try {
       await deleteChart(chartId);
       message.success('Chart deleted successfully');
-      
+
       // FIX: Update local state immediately for instant UI feedback
       setMyCharts(prev => prev.filter(c => c.id !== chartId));
       setSharedCharts(prev => prev.filter(c => c.id !== chartId));
@@ -92,7 +92,7 @@ const ChartLibrary: React.FC<ChartLibraryProps> = ({
   const handleLoadChart = (chart: SavedChart) => {
     // Check if we need to navigate to the correct page
     const chartCategory = chart.chart_category as 'insights' | 'funnels';
-    
+
     if (currentPage && chartCategory !== currentPage) {
       // Navigate to the correct page with the chart
       if (onNavigate) {
@@ -283,4 +283,3 @@ const ChartLibrary: React.FC<ChartLibraryProps> = ({
 };
 
 export default ChartLibrary;
-

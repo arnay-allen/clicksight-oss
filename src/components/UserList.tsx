@@ -73,4 +73,3 @@ const UserList: React.FC<UserListProps> = ({
 };
 
 export default UserList;
-

@@ -31,13 +31,13 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [saveMode, setSaveMode] = useState<'update' | 'new'>('update');
-  
+
   // Determine if user can update the chart
   const canUpdate = existingChart && (
     !existingChart.permission || // No permission means user owns it
     existingChart.permission === 'edit' // Or user has edit permission
   );
-  
+
   // Sync state when existingChart changes or modal opens
   React.useEffect(() => {
     if (visible) {
@@ -53,14 +53,14 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
       }
     }
   }, [visible, existingChart, canUpdate]);
-  
+
   // Auto-detect chart type based on category
   const chartType = chartCategory === 'insights' ? 'line' : 'horizontal-bar';
 
   const handleSave = async () => {
     // For update mode, use existing chart name if field is disabled
     const chartName = (existingChart && saveMode === 'update') ? existingChart.name : name;
-    
+
     if (!chartName.trim()) {
       message.error('Please enter a chart name');
       return;
@@ -92,8 +92,8 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
           config,
           user.id
         );
-        message.success(existingChart && saveMode === 'new' 
-          ? 'New chart saved successfully!' 
+        message.success(existingChart && saveMode === 'new'
+          ? 'New chart saved successfully!'
           : 'Chart saved successfully!');
       }
 
@@ -136,10 +136,10 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
       width={600}
     >
       {existingChart && (
-        <div style={{ 
-          marginBottom: 20, 
-          padding: 12, 
-          background: 'rgba(24, 144, 255, 0.1)', 
+        <div style={{
+          marginBottom: 20,
+          padding: 12,
+          background: 'rgba(24, 144, 255, 0.1)',
           borderRadius: 8,
           border: '1px solid rgba(24, 144, 255, 0.3)'
         }}>
@@ -152,8 +152,8 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
             )}
           </div>
           {canUpdate ? (
-            <Radio.Group 
-              value={saveMode} 
+            <Radio.Group
+              value={saveMode}
               onChange={(e) => setSaveMode(e.target.value)}
               style={{ width: '100%' }}
             >
@@ -235,4 +235,3 @@ const SaveChartModal: React.FC<SaveChartModalProps> = ({
 };
 
 export default SaveChartModal;
-

@@ -495,5 +495,5 @@ After setting up the database:
 
 ---
 
-**Last Updated**: November 18, 2025  
+**Last Updated**: November 18, 2025
 **Version**: 1.0

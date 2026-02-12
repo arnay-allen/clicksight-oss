@@ -38,7 +38,7 @@ export async function calculateCohortTable(
   // Build cohort grouping based on period
   let cohortGrouping = '';
   let periodDiff = '';
-  
+
   switch (cohortPeriod) {
     case 'daily':
       cohortGrouping = 'toDate(activation_date)';
@@ -68,42 +68,42 @@ export async function calculateCohortTable(
   const userIdentifier = schemaAdapter.getUserIdentifier();
 
   const query = `
-    WITH 
+    WITH
     -- Pre-compute user_identifier for performance (avoid repeated computation)
     base_events AS (
-      SELECT 
+      SELECT
         ${userIdentifier} as user_identifier,
         ${eventNameCol} as event_name,
         ${dateCol} as event_date
       FROM ${table}
-      WHERE ${dateCol} >= '${startDate}' 
+      WHERE ${dateCol} >= '${startDate}'
         AND ${dateCol} <= '${endDate}'
         ${segmentFilter}
         AND user_identifier != ''
     ),
-    
+
     -- Step 1: Get cohort assignments (first time user performed activation event)
     cohort_users AS (
-      SELECT 
+      SELECT
         user_identifier,
         min(event_date) as activation_date
       FROM base_events
       WHERE event_name = '${activationEvent}'
       GROUP BY user_identifier
     ),
-    
+
     -- Step 2: Assign cohort period to each user
     cohorts AS (
-      SELECT 
+      SELECT
         user_identifier,
         activation_date,
         ${cohortGrouping} as cohort_date
       FROM cohort_users
     ),
-    
+
     -- Step 3: Get all return events for cohort users
     return_events AS (
-      SELECT 
+      SELECT
         c.user_identifier,
         c.cohort_date,
         e.event_date as return_date
@@ -113,10 +113,10 @@ export async function calculateCohortTable(
       WHERE e.event_name = '${returnEvent}'
         AND e.event_date >= c.cohort_date
     ),
-    
+
     -- Step 4: Calculate retention by period
     retention_by_period AS (
-      SELECT 
+      SELECT
         cohort_date,
         ${periodDiff} as period_num,
         uniq(user_identifier) as retained_users
@@ -124,18 +124,18 @@ export async function calculateCohortTable(
       WHERE period_num >= 0 AND period_num <= ${retentionWindow}
       GROUP BY cohort_date, period_num
     ),
-    
+
     -- Step 5: Get cohort sizes (period 0)
     cohort_sizes AS (
-      SELECT 
+      SELECT
         cohort_date,
         count(DISTINCT user_identifier) as cohort_size
       FROM cohorts
       GROUP BY cohort_date
     )
-    
+
     -- Step 6: Join and calculate retention percentages
-    SELECT 
+    SELECT
       cs.cohort_date,
       cs.cohort_size,
       rbp.period_num,
@@ -157,7 +157,7 @@ export async function calculateCohortTable(
 
     data.forEach((row: any) => {
       const cohortDate = row.cohort_date;
-      
+
       if (!cohortMap.has(cohortDate)) {
         cohortMap.set(cohortDate, {
           cohortDate,
@@ -193,9 +193,9 @@ export function exportCohortToCSV(
   }
 
   // Build CSV header
-  const periodLabel = cohortPeriod === 'daily' ? 'Day' : 
+  const periodLabel = cohortPeriod === 'daily' ? 'Day' :
                       cohortPeriod === 'weekly' ? 'Week' : 'Month';
-  
+
   let csvContent = `Cohort Date,Size,${periodLabel} 0`;
   for (let i = 1; i <= retentionWindow; i++) {
     csvContent += `,${periodLabel} ${i}`;
@@ -205,13 +205,13 @@ export function exportCohortToCSV(
   // Build CSV rows
   cohortData.forEach((cohort) => {
     let row = `${cohort.cohortDate},${cohort.cohortSize}`;
-    
+
     for (let i = 0; i <= retentionWindow; i++) {
       const periodKey = `period_${i}`;
       const value = cohort.retentionData[periodKey];
       row += `,${value !== undefined ? value.toFixed(2) + '%' : 'N/A'}`;
     }
-    
+
     csvContent += row + '\n';
   });
 
@@ -219,13 +219,12 @@ export function exportCohortToCSV(
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
-  
+
   link.setAttribute('href', url);
   link.setAttribute('download', `cohort_analysis_${new Date().getTime()}.csv`);
   link.style.visibility = 'hidden';
-  
+
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
-

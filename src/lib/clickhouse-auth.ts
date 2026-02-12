@@ -85,21 +85,21 @@ export async function insertOrUpdateUser(userInput: UserInput): Promise<User> {
   if (userInput.id) {
     // Existing user - UPDATE works! (last_login not in ORDER BY or version column)
     const updateQuery = `
-      ALTER TABLE clicksight.users 
-      UPDATE 
+      ALTER TABLE clicksight.users
+      UPDATE
         name = '${escapedName}',
         avatar_url = '${escapedAvatarUrl}',
         google_id = '${escapedGoogleId}',
         last_login = now()
       WHERE id = '${userInput.id}'
     `;
-    
+
     await queryClickHouse(updateQuery);
   } else {
     // New user - INSERT
     const userId = uuidv4();
     const insertQuery = `
-      INSERT INTO clicksight.users 
+      INSERT INTO clicksight.users
       (id, email, name, avatar_url, google_id, created_at, last_login, status)
       VALUES (
         '${userId}',
@@ -112,9 +112,9 @@ export async function insertOrUpdateUser(userInput: UserInput): Promise<User> {
         'active'
       )
     `;
-    
+
     await queryClickHouse(insertQuery);
-    
+
     // Wait a moment for ClickHouse to process the insert
     await new Promise(resolve => setTimeout(resolve, 100));
   }
@@ -122,7 +122,7 @@ export async function insertOrUpdateUser(userInput: UserInput): Promise<User> {
   // Fetch and return user (with retry logic)
   let retries = 3;
   let user = null;
-  
+
   while (retries > 0 && !user) {
     user = await getUserByEmail(userInput.email);
     if (!user) {
@@ -133,7 +133,7 @@ export async function insertOrUpdateUser(userInput: UserInput): Promise<User> {
       }
     }
   }
-  
+
   if (!user) {
     throw new Error('Failed to create/update user - user not found after insert');
   }
@@ -155,4 +155,3 @@ export async function getAllActiveUsers(): Promise<User[]> {
   const result = await queryClickHouse(query);
   return result.data || [];
 }
-

@@ -8,11 +8,11 @@ interface SqlEditorProps {
   readOnly?: boolean;
 }
 
-const SqlEditor: React.FC<SqlEditorProps> = ({ 
-  value, 
-  onChange, 
+const SqlEditor: React.FC<SqlEditorProps> = ({
+  value,
+  onChange,
   height = '400px',
-  readOnly = false 
+  readOnly = false
 }) => {
   const handleEditorChange = (value: string | undefined) => {
     onChange(value || '');
@@ -50,4 +50,3 @@ const SqlEditor: React.FC<SqlEditorProps> = ({
 };
 
 export default SqlEditor;
-

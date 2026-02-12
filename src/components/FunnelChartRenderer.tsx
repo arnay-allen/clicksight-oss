@@ -25,7 +25,7 @@ const FunnelChartRenderer: React.FC<FunnelChartRendererProps> = ({ config, heigh
   const loadFunnelData = async () => {
     // Support both 'steps' and 'funnelSteps' for compatibility
     const steps = config?.funnelSteps || config?.steps;
-    
+
     if (!config || !steps || steps.length === 0) {
       setError('No funnel steps configured');
       setLoading(false);
@@ -40,7 +40,7 @@ const FunnelChartRenderer: React.FC<FunnelChartRendererProps> = ({ config, heigh
 
       // Convert date range (support both new relative and old absolute formats)
       let startDate: string, endDate: string;
-      
+
       if (dateRangeConfig) {
         // New format: relative date range
         const [start, end] = getAbsoluteDateRange(dateRangeConfig);
@@ -58,8 +58,8 @@ const FunnelChartRenderer: React.FC<FunnelChartRendererProps> = ({ config, heigh
       const metric = metricConfig || { type: 'total' };
 
       // Check if we have breakdown properties
-      const hasBreakdown = breakdownProperties && 
-                           breakdownProperties.length > 0 && 
+      const hasBreakdown = breakdownProperties &&
+                           breakdownProperties.length > 0 &&
                            breakdownProperties.some((bp: any) => bp.property || typeof bp === 'string');
 
       if (hasBreakdown) {
@@ -78,16 +78,16 @@ const FunnelChartRenderer: React.FC<FunnelChartRendererProps> = ({ config, heigh
           // Create a combined dataset where each step has data for all segments
           const stepNames = breakdownData[0]?.steps?.map((s: any) => s.stepName) || [];
           const segments = breakdownData.map((bd: any) => bd.segmentName);
-          
+
           const combinedData = stepNames.map((stepName: string, stepIndex: number) => {
             const dataPoint: any = { stepName };
-            
+
             // Add count for each segment
             breakdownData.forEach((segment) => {
               const step = segment.steps[stepIndex];
               dataPoint[segment.segmentName] = step.count;
             });
-            
+
             return dataPoint;
           });
 
@@ -219,4 +219,3 @@ const FunnelChartRenderer: React.FC<FunnelChartRendererProps> = ({ config, heigh
 };
 
 export default FunnelChartRenderer;
-

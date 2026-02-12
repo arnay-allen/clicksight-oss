@@ -102,22 +102,22 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
   const [propertiesLoading, setPropertiesLoading] = useState<Record<string, boolean>>({});
   const [highlightedSource, setHighlightedSource] = useState<string | null>(null);
   const [propertyValueSuggestions, setPropertyValueSuggestions] = useState<Record<string, string[]>>({});
-  
+
   // Metric configuration
   const [metricType, setMetricType] = useState<MetricType>('total');
   const [metricProperty, setMetricProperty] = useState<string>('');
-  
+
   // Chart save/load state
   const [saveChartModalVisible, setSaveChartModalVisible] = useState(false);
   const [chartLibraryVisible, setChartLibraryVisible] = useState(false);
-  
+
   // Track loaded chart for update vs. save-as-new
   const [loadedChartId, setLoadedChartId] = useState<string | null>(null);
   const [loadedChartName, setLoadedChartName] = useState<string | null>(null);
   const [loadedChartDescription, setLoadedChartDescription] = useState<string>('');
   const [loadedChartType, setLoadedChartType] = useState<string>('line');
   const [loadedChartPermission, setLoadedChartPermission] = useState<string | undefined>(undefined);
-  
+
   // Flag to prevent auto-loading during chart restoration
   const [isRestoringChart, setIsRestoringChart] = useState(false);
 
@@ -126,19 +126,19 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     try {
       // Show full-screen loading overlay
       setInitialChartLoading(true);
-      
+
       const config = JSON.parse(chart.config);
-      
+
       // Set flag to prevent auto-loading during restoration
       setIsRestoringChart(true);
-      
+
       // Track loaded chart metadata for update functionality
       setLoadedChartId(chart.id);
       setLoadedChartName(chart.name);
       setLoadedChartDescription(chart.description || '');
       setLoadedChartType(chart.chart_type || 'line');
       setLoadedChartPermission(chart.permission);
-      
+
       // Restore date range (support both old and new formats)
       if (config.dateRangeConfig) {
         // New format: relative date range config
@@ -158,17 +158,17 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
         );
         setDateRangeType(detectedConfig.type);
       }
-      
+
       // Restore granularity
       if (config.granularity) {
         setGranularity(config.granularity);
       }
-      
+
       // Restore breakdown properties
       if (config.breakdownProperties) {
         setBreakdownProperties(config.breakdownProperties);
       }
-      
+
       // Restore metric config (backwards compatible - defaults to 'total')
       if (config.metricConfig) {
         setMetricType(config.metricConfig.type || 'total');
@@ -186,10 +186,10 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
           await loadPropertiesForTable(ds.table);
         }
       }));
-      
+
       // NOW restore data sources after events are loaded
       setDataSources(config.dataSources || []);
-      
+
       // Clear flag and trigger manual load after state is set
       setTimeout(() => {
         setIsRestoringChart(false);
@@ -208,7 +208,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
       // Skip default setup if loading a saved chart
       return;
     }
-    
+
     // Auto-add table from schema config as first data source
     const tableName = schemaAdapter.getTableName();
     const initialDataSource: DataSource = {
@@ -227,18 +227,18 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
   useEffect(() => {
     // Use a flag to prevent multiple executions
     let chartLoaded = false;
-    
+
     const checkSessionStorage = () => {
       if (chartLoaded) {
         return;
       }
-      
+
       const chartToLoadStr = sessionStorage.getItem('chartToLoad');
-      
+
       if (chartToLoadStr) {
         try {
           const chart = JSON.parse(chartToLoadStr);
-          
+
           if (chart.chart_category === 'insights') {
             chartLoaded = true;
             sessionStorage.removeItem('chartToLoad');
@@ -250,10 +250,10 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
         }
       }
     };
-    
+
     // Check after a small delay to ensure sessionStorage is written
     const timeoutId = setTimeout(checkSessionStorage, 150);
-    
+
     return () => {
       clearTimeout(timeoutId);
     };
@@ -273,7 +273,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     if (isRestoringChart) {
       return;
     }
-    
+
     const hasValidData = dataSources.some(ds => ds.table && ds.events.length > 0);
     if (hasValidData) {
       // Debounce to avoid too many requests
@@ -288,18 +288,18 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     if (eventsByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setEventsLoading(prev => ({ ...prev, [table]: true }));
       const events = await getEventNames(table);
       setEventsByTable(prev => ({ ...prev, [table]: events }));
-      
+
       // Auto-select page_loaded if available, otherwise first event
       if (sourceId && events.length > 0) {
         const defaultEvent = events.includes('page_loaded') ? 'page_loaded' : events[0];
-        setDataSources(prev => 
-          prev.map(ds => ds.id === sourceId ? { 
-            ...ds, 
+        setDataSources(prev =>
+          prev.map(ds => ds.id === sourceId ? {
+            ...ds,
             events: [defaultEvent]
           } : ds)
         );
@@ -317,7 +317,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     if (propertiesByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setPropertiesLoading(prev => ({ ...prev, [table]: true }));
       // Get first event from table to fetch properties
@@ -377,9 +377,9 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
   };
 
   const updateFilter = (
-    sourceId: string, 
-    filterIndex: number, 
-    field: keyof PropertyFilter, 
+    sourceId: string,
+    filterIndex: number,
+    field: keyof PropertyFilter,
     value: any
   ) => {
     setDataSources(prev => prev.map(ds => {
@@ -418,17 +418,17 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     }
 
     // Flatten all source+event combinations
-    const allCombinations: Array<{ 
-      table: string; 
-      eventName: string; 
+    const allCombinations: Array<{
+      table: string;
+      eventName: string;
       filters?: PropertyFilter[];
       filterLogic?: 'AND' | 'OR';
     }> = [];
     dataSources.forEach(ds => {
       if (ds.table && ds.events.length > 0) {
         ds.events.forEach(eventName => {
-          allCombinations.push({ 
-            table: ds.table, 
+          allCombinations.push({
+            table: ds.table,
             eventName,
             filters: ds.filters,
             filterLogic: ds.filterLogic
@@ -436,7 +436,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
         });
       }
     });
-    
+
     if (allCombinations.length === 0) {
       setError('Please select at least one table and event');
       return;
@@ -445,19 +445,19 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     try {
       setLoading(true);
       setError('');
-      
+
       const [startDate, endDate] = dateRange;
-      
+
       // Build metric config
       const metricConfig: MetricConfig = {
         type: metricType,
         property: metricProperty || undefined
       };
-      
+
       if (breakdownProperties.length > 0) {
         // Fetch breakdown data for each combination using new metric function
         const breakdownResults: Record<string, TrendBreakdown[]> = {};
-        
+
         for (const combo of allCombinations) {
           const breakdowns = await getEventMetricWithBreakdown(
             combo.table,
@@ -473,13 +473,13 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
           const key = `${combo.eventName} (${combo.table})`;
           breakdownResults[key] = breakdowns;
         }
-        
+
         setTrendBreakdowns(breakdownResults);
         setChartData([]); // Clear regular chart data
       } else {
         // Regular trend without breakdown using new metric function
         const allSourcesData = await Promise.all(
-          allCombinations.map(combo => 
+          allCombinations.map(combo =>
             getEventMetric(
               combo.table,
               combo.eventName,
@@ -494,11 +494,11 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
 
         // Merge data from all sources into a single array with dates as keys
         const dateMap = new Map<string, any>();
-        
+
         allSourcesData.forEach((sourceData, index) => {
           const combo = allCombinations[index];
           const sourceKey = `${combo.eventName} (${combo.table})`;
-          
+
           sourceData.forEach(item => {
             if (!dateMap.has(item.date)) {
               dateMap.set(item.date, { date: item.date });
@@ -508,7 +508,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
         });
 
         // Convert map to array and sort by date
-        const mergedData = Array.from(dateMap.values()).sort((a, b) => 
+        const mergedData = Array.from(dateMap.values()).sort((a, b) =>
           a.date.localeCompare(b.date)
         );
 
@@ -540,7 +540,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
   };
 
   const updateDataSourceEvents = (id: string, eventNames: string[]) => {
-    setDataSources(prev => 
+    setDataSources(prev =>
       prev.map(ds => ds.id === id ? { ...ds, events: eventNames } : ds)
     );
   };
@@ -554,18 +554,18 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     const total = getTotalForSource(sourceKey);
     return chartData.length > 0 ? Math.round((total / chartData.length) * 10) / 10 : 0;
   };
-  
+
   // Get all valid table+event combinations
   const getAllCombinations = () => {
     const combinations: Array<{ id: string; table: string; event: string; sourceIndex: number }> = [];
     dataSources.forEach((ds, index) => {
       if (ds.table && ds.events.length > 0) {
         ds.events.forEach(eventName => {
-          combinations.push({ 
-            id: `${ds.id}-${eventName}`, 
-            table: ds.table, 
-            event: eventName, 
-            sourceIndex: index 
+          combinations.push({
+            id: `${ds.id}-${eventName}`,
+            table: ds.table,
+            event: eventName,
+            sourceIndex: index
           });
         });
       }
@@ -577,12 +577,12 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
   const buildChartConfig = () => {
     // Detect if current date range matches a relative pattern
     const detectedConfig = detectDateRangeType(dateRange[0], dateRange[1]);
-    
+
     const metricConfig: MetricConfig = {
       type: metricType,
       property: metricProperty || undefined
     };
-    
+
     return {
       dataSources: dataSources,
       dateRangeConfig: detectedConfig,  // Store relative date range config
@@ -597,7 +597,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     // If breakdown is used, export the breakdown section instead
     const hasBreakdown = Object.keys(trendBreakdowns).length > 0;
     const elementId = hasBreakdown ? 'breakdown-charts-container' : 'insights-chart-container';
-    
+
     const chartElement = document.getElementById(elementId);
     if (chartElement) {
       const filename = `insights-${dayjs().format('YYYY-MM-DD-HHmmss')}.png`;
@@ -609,7 +609,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
 
   const handleExportCSV = () => {
     // Check if we have breakdown data or regular chart data
-    const hasBreakdownData = Object.keys(trendBreakdowns).length > 0 && 
+    const hasBreakdownData = Object.keys(trendBreakdowns).length > 0 &&
                              Object.values(trendBreakdowns).some(data => data.length > 0);
     const hasRegularData = chartData.length > 0;
 
@@ -619,7 +619,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     }
 
     const filename = `insights-${dayjs().format('YYYY-MM-DD-HHmmss')}.csv`;
-    
+
     // If we have breakdown data, flatten it for export
     if (hasBreakdownData) {
       const flattenedData: any[] = [];
@@ -654,16 +654,16 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
     try {
       // Clear all analytics cache
       clearAnalyticsCache();
-      
+
       // Re-fetch event names for current data sources
       const newEventsLoading: Record<string, boolean> = {};
       const newEventsByTable: Record<string, string[]> = {};
-      
+
       for (const source of dataSources) {
         if (source.table) {
           newEventsLoading[source.table] = true;
           setEventsLoading(newEventsLoading);
-          
+
           try {
             const events = await getEventNames(source.table);
             newEventsByTable[source.table] = events;
@@ -675,9 +675,9 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
           }
         }
       }
-      
+
       setEventsByTable(newEventsByTable);
-      
+
       message.success('Data refreshed successfully');
     } catch (error) {
       console.error('Failed to refresh data:', error);
@@ -687,7 +687,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
 
   return (
     <div>
-      <Card 
+      <Card
         title={
           <Space>
             <span>Event Trends - Multi-Datasource</span>
@@ -763,11 +763,11 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                 <span style={{ fontWeight: 600, fontSize: 16 }}>Data Source</span>
               </div>
             )}
-            
+
             {dataSources.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   size="large"
                   icon={<PlusOutlined />}
                   onClick={addDataSource}
@@ -779,12 +779,12 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                 </div>
               </div>
             )}
-            
+
             {dataSources.map((source, index) => (
-              <Card 
-                key={source.id} 
-                size="small" 
-                style={{ 
+              <Card
+                key={source.id}
+                size="small"
+                style={{
                   marginBottom: 12,
                   borderLeft: `4px solid ${CHART_COLORS[index % CHART_COLORS.length]}`
                 }}
@@ -815,9 +815,9 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                     />
                   </Col>
                   <Col span={2}>
-                    <Button 
-                      type="text" 
-                      danger 
+                    <Button
+                      type="text"
+                      danger
                       icon={<DeleteOutlined />}
                       onClick={() => removeDataSource(source.id)}
                       disabled={true}
@@ -1048,7 +1048,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                   )}
                 </Col>
               </Row>
-              
+
               {loading && (
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <Spin tip="Loading trend data..." />
@@ -1056,11 +1056,11 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
               )}
 
               {error && loading === false && (
-                <Alert 
-                  message="Error" 
-                  description={error} 
-                  type="error" 
-                  closable 
+                <Alert
+                  message="Error"
+                  description={error}
+                  type="error"
+                  closable
                   onClose={() => setError('')}
                 />
               )}
@@ -1084,8 +1084,8 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
           {getAllCombinations().map((combo, index) => {
             const sourceKey = `${combo.event} (${combo.table})`;
             return (
-              <Card 
-                key={combo.id} 
+              <Card
+                key={combo.id}
                 title={
                   <div>
                     <Tag color={CHART_COLORS[index % CHART_COLORS.length]} style={{ marginRight: 8 }}>
@@ -1097,7 +1097,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                     </span>
                   </div>
                 }
-                style={{ 
+                style={{
                   marginBottom: 16,
                   borderLeft: `4px solid ${CHART_COLORS[index % CHART_COLORS.length]}`
                 }}
@@ -1133,7 +1133,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
           <div id="insights-chart-container">
           <Card title="Multi-Source Event Trends">
             <ResponsiveContainer width="100%" height={500}>
-              <LineChart 
+              <LineChart
                 data={chartData}
                 onMouseMove={(e: any) => {
                   if (e && e.activeTooltipIndex !== undefined) {
@@ -1146,7 +1146,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                 <XAxis dataKey="date" />
                 <YAxis tickFormatter={formatYAxis} />
                 <Tooltip formatter={(value: any) => value.toLocaleString()} />
-                <Legend 
+                <Legend
                   onClick={(e: any) => {
                     setHighlightedSource(highlightedSource === e.value ? null : e.value);
                   }}
@@ -1182,7 +1182,7 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
         <div id="breakdown-charts-container">
           {Object.entries(trendBreakdowns).map(([eventKey, breakdowns]) => {
             if (breakdowns.length === 0) return null;
-            
+
             // Merge breakdown data for this event
             const dateMap = new Map<string, any>();
             breakdowns.forEach((breakdown) => {
@@ -1194,12 +1194,12 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
               });
             });
 
-            const mergedData = Array.from(dateMap.values()).sort((a, b) => 
+            const mergedData = Array.from(dateMap.values()).sort((a, b) =>
               a.date.localeCompare(b.date)
             );
 
             return (
-              <Card 
+              <Card
                 key={eventKey}
                 title={
                   <div>
@@ -1221,10 +1221,10 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
                   {breakdowns.map((breakdown, idx) => {
                     const total = breakdown.data.reduce((sum, d) => sum + d.count, 0);
                     const avg = breakdown.data.length > 0 ? total / breakdown.data.length : 0;
-                    
+
                     return (
                       <Col key={breakdown.segmentName} span={8}>
-                        <Card 
+                        <Card
                           size="small"
                           style={{ borderLeft: `4px solid ${CHART_COLORS[idx % CHART_COLORS.length]}` }}
                         >
@@ -1342,4 +1342,3 @@ function EventTrends({ onNavigate }: EventTrendsProps = {}) {
 }
 
 export default EventTrends;
-

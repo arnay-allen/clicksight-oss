@@ -78,7 +78,7 @@ const SavedChartsPage: React.FC<SavedChartsPageProps> = ({ onNavigate }) => {
     try {
       await deleteChart(chartId);
       message.success('Chart deleted successfully');
-      
+
       // Update local state immediately
       setMyCharts(prev => prev.filter(c => c.id !== chartId));
       setSharedCharts(prev => prev.filter(c => c.id !== chartId));
@@ -379,4 +379,3 @@ const SavedChartsPage: React.FC<SavedChartsPageProps> = ({ onNavigate }) => {
 };
 
 export default SavedChartsPage;
-

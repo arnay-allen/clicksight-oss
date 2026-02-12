@@ -1,10 +1,10 @@
 /**
  * Runtime configuration utility
- * 
+ *
  * This allows the frontend to read configuration that is injected at runtime
  * rather than at build time, enabling the same Docker image to be used across
  * different environments with different configurations.
- * 
+ *
  * Configuration priority:
  * 1. window._env_ (injected by entrypoint.sh from K8s secrets/env vars)
  * 2. import.meta.env (build-time fallback for local development)
@@ -63,4 +63,3 @@ console.log('📝 ClickSight Configuration:', {
 });
 
 export default config;
-

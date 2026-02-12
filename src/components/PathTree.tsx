@@ -16,10 +16,10 @@ const PathTree: React.FC<PathTreeProps> = ({ sequences }) => {
   // Build tree structure from sequences
   const buildTreeData = (): DataNode[] => {
     const root: any = {};
-    
+
     sequences.forEach((seq) => {
       let currentLevel = root;
-      
+
       seq.sequence.forEach((event, eventIndex) => {
         if (!currentLevel[event]) {
           currentLevel[event] = {
@@ -28,13 +28,13 @@ const PathTree: React.FC<PathTreeProps> = ({ sequences }) => {
             sequences: [],
           };
         }
-        
+
         currentLevel[event].count += seq.count;
-        
+
         if (eventIndex === seq.sequence.length - 1) {
           currentLevel[event].sequences.push(seq);
         }
-        
+
         currentLevel = currentLevel[event].children;
       });
     });
@@ -44,7 +44,7 @@ const PathTree: React.FC<PathTreeProps> = ({ sequences }) => {
       return Object.entries(obj).map(([event, data]: [string, any], index) => {
         const key = `${parentKey}-${event}-${index}`;
         const hasChildren = Object.keys(data.children).length > 0;
-        
+
         const title = (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Text strong style={{ color: '#e0e0e0' }}>{event}</Text>
@@ -107,4 +107,3 @@ const PathTree: React.FC<PathTreeProps> = ({ sequences }) => {
 };
 
 export default PathTree;
-

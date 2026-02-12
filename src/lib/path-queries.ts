@@ -100,18 +100,18 @@ export async function calculateUserPaths(
   const userIdentifier = schemaAdapter.getUserIdentifier();
 
   const query = `
-    WITH 
+    WITH
     -- Step 1: Get users who performed start event with filters
     start_event_users AS (
       SELECT DISTINCT ${userIdentifier} as user_identifier
       FROM ${table}
-      WHERE ${dateCol} >= '${startDate}' 
+      WHERE ${dateCol} >= '${startDate}'
         AND ${dateCol} <= '${endDate}'
         AND ${eventNameCol} = '${startEvent}'
         ${startEventPropertyFilters}
         ${segmentFilter}
     ),
-    
+
     -- Step 1b: Filter by end event if "only show paths to end" is enabled
     relevant_users AS (
       SELECT user_identifier
@@ -126,27 +126,27 @@ export async function calculateUserPaths(
           ${endEventPropertyFilters}
       )` : ''}
     ),
-    
+
     -- Step 2: Get ordered events for relevant users only
     ordered_events AS (
-      SELECT 
+      SELECT
         ${userIdentifier} as user_identifier,
         ${eventNameCol} as event_name,
         ${timestampCol} as server_timestamp,
         row_number() OVER (PARTITION BY user_identifier ORDER BY ${timestampCol}) as rn,
         lagInFrame(${eventNameCol}) OVER (PARTITION BY user_identifier ORDER BY ${timestampCol}) as prev_event
       FROM ${table}
-      WHERE ${dateCol} >= '${startDate}' 
+      WHERE ${dateCol} >= '${startDate}'
         AND ${dateCol} <= '${endDate}'
         ${excludedEventsFilter}
         ${segmentFilter}
         AND ${userIdentifier} IN (SELECT user_identifier FROM relevant_users)
       ORDER BY user_identifier, server_timestamp
     ),
-    
+
     -- Step 3: Deduplicate consecutive events BEFORE grouping (memory efficient)
     deduplicated_events AS (
-      SELECT 
+      SELECT
         user_identifier,
         event_name,
         server_timestamp
@@ -155,40 +155,40 @@ export async function calculateUserPaths(
         AND event_name != ''
         AND event_name IS NOT NULL
     ),
-    
+
     -- Step 4: Group into sequences (maintain order by using arraySort with tuple)
     deduplicated_sequences AS (
-      SELECT 
+      SELECT
         user_identifier,
         arrayMap(x -> x.1, arraySort(x -> x.2, groupArray((event_name, server_timestamp)))) as clean_sequence
       FROM deduplicated_events
       GROUP BY user_identifier
       HAVING length(clean_sequence) >= 2
     ),
-    
+
     -- Step 5: Extract paths starting from start event
     paths_from_start AS (
-      SELECT 
+      SELECT
         user_identifier,
         clean_sequence,
         arrayFirstIndex(x -> x = '${startEvent}', clean_sequence) as start_index
       FROM deduplicated_sequences
       WHERE start_index > 0
     ),
-    
+
     -- Step 6: Extract path segments (up to maxDepth steps)
     path_segments AS (
-      SELECT 
+      SELECT
         user_identifier,
         arraySlice(clean_sequence, start_index, ${maxDepth}) as sequence
       FROM paths_from_start
       WHERE length(arraySlice(clean_sequence, start_index, ${maxDepth})) >= 2
         ${endEventFilter}
     ),
-    
+
     -- Step 7: Count path sequences
     path_counts AS (
-      SELECT 
+      SELECT
         sequence,
         count(*) as user_count
       FROM path_segments
@@ -196,8 +196,8 @@ export async function calculateUserPaths(
       ORDER BY user_count DESC
       LIMIT ${topPaths}
     )
-    
-    SELECT 
+
+    SELECT
       sequence,
       user_count,
       round((user_count / (SELECT count(DISTINCT user_identifier) FROM path_segments)) * 100, 2) as percentage
@@ -209,15 +209,15 @@ export async function calculateUserPaths(
     const result = await queryClickHouse(query);
 
     const data = result.data || [];
-    
+
     // Client-side deduplication: Remove consecutive duplicates and filter empty strings
     const cleanedData = data.map((row: any) => ({
       ...row,
-      sequence: row.sequence.filter((event: string, i: number, arr: string[]) => 
+      sequence: row.sequence.filter((event: string, i: number, arr: string[]) =>
         event && event.trim() !== '' && (i === 0 || event !== arr[i - 1])
       )
     })).filter((row: any) => row.sequence.length >= 2);
-    
+
     // Calculate total users
     const totalUsers = cleanedData.reduce((sum: number, row: any) => sum + parseInt(row.user_count, 10), 0);
 
@@ -319,9 +319,9 @@ export function exportPathsToCSV(
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
-  
+
   const filename = `user_paths_${startEvent}${endEvent ? `_to_${endEvent}` : ''}_${new Date().toISOString().split('T')[0]}.csv`;
-  
+
   link.setAttribute('href', url);
   link.setAttribute('download', filename);
   link.style.visibility = 'hidden';
@@ -329,4 +329,3 @@ export function exportPathsToCSV(
   link.click();
   document.body.removeChild(link);
 }
-

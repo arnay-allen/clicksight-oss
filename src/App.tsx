@@ -157,9 +157,9 @@ function App() {
         return <DashboardsPage onNavigate={handleNavigate} onNavigateToDashboard={handleNavigateToDashboard} />;
       case 'dashboard-view':
         return currentDashboardId ? (
-          <Dashboard 
-            dashboardId={currentDashboardId} 
-            onNavigate={handleNavigate} 
+          <Dashboard
+            dashboardId={currentDashboardId}
+            onNavigate={handleNavigate}
             onNavigateToDashboard={handleNavigateToDashboard}
           />
         ) : (
@@ -392,4 +392,3 @@ function App() {
 }
 
 export default App;
-

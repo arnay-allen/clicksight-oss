@@ -10,10 +10,10 @@ interface WelcomeProps {
 
 const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
   const { user } = useAuth();
-  
+
   // Extract first name from full name
   const firstName = user?.name?.split(' ')[0] || 'there';
-  
+
   // Core Analytics Features
   const coreFeatures = [
     {
@@ -38,7 +38,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
       color: '#13C2C2'
     }
   ];
-  
+
   // Advanced Analytics
   const advancedAnalytics = [
     {
@@ -66,7 +66,7 @@ const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
       available: true
     }
   ];
-  
+
   // Power Tools
   const powerTools = [
     {
@@ -460,4 +460,3 @@ const Welcome: React.FC<WelcomeProps> = ({ onNavigate }) => {
 };
 
 export default Welcome;
-

@@ -68,7 +68,7 @@ export async function getPropertyList(
   try {
     // Get all column names from the table
     const describeQuery = `DESCRIBE ${table}`;
-    
+
     const describeParams = new URLSearchParams({
       database: CLICKHOUSE_DATABASE,
       default_format: 'JSONCompact',
@@ -90,27 +90,27 @@ export async function getPropertyList(
     );
 
     const columns = describeResponse.data.data.map((row: any[]) => row[0]);
-    
+
     // Filter out system columns and apply search
-    let filteredColumns = columns.filter((col: string) => 
+    let filteredColumns = columns.filter((col: string) =>
       !['event_timestamp', 'server_timestamp', 'ist_date', 'client_reference_id', 'meta'].includes(col)
     );
 
     if (searchTerm) {
       const lowerSearch = searchTerm.toLowerCase();
-      filteredColumns = filteredColumns.filter((col: string) => 
+      filteredColumns = filteredColumns.filter((col: string) =>
         col.toLowerCase().includes(lowerSearch)
       );
     }
 
     // Get statistics for each property (limit to first 50 for performance)
     const propertiesToAnalyze = filteredColumns.slice(0, 50);
-    
+
     const statsPromises = propertiesToAnalyze.map(async (property: string) => {
       try {
         const statsQuery = `
           WITH all_stats AS (
-            SELECT 
+            SELECT
               count(*) as total_count,
               uniq(\`${property}\`) as unique_count,
               countIf(\`${property}\` IS NULL) as null_count,
@@ -125,7 +125,7 @@ export async function getPropertyList(
               AND \`${property}\` != '' AND \`${property}\` IS NOT NULL
             LIMIT 1
           )
-          SELECT 
+          SELECT
             a.total_count,
             a.unique_count,
             a.null_count,
@@ -155,7 +155,7 @@ export async function getPropertyList(
         );
 
         const data = response.data.data[0];
-        
+
         // Detect data type from sample values
         const dataType = detectDataType(data.sample_values);
 
@@ -203,7 +203,7 @@ export async function getPropertyStatistics(
     // Get basic stats and top values
     const statsQuery = `
       WITH stats AS (
-        SELECT 
+        SELECT
           count(*) as total_count,
           uniq(\`${property}\`) as unique_count,
           countIf(\`${property}\` IS NULL) as null_count,
@@ -212,7 +212,7 @@ export async function getPropertyStatistics(
         WHERE ist_date >= '${startDate}' AND ist_date <= '${endDate}'
       ),
       top_values AS (
-        SELECT 
+        SELECT
           \`${property}\` as value,
           count(*) as count
         FROM ${table}
@@ -222,7 +222,7 @@ export async function getPropertyStatistics(
         ORDER BY count DESC
         LIMIT 10
       )
-      SELECT 
+      SELECT
         s.total_count,
         s.unique_count,
         s.null_count,
@@ -328,7 +328,7 @@ async function getNumericStatistics(
           AND toFloat64OrNull(\`${property}\`) IS NOT NULL
       ),
       stats AS (
-        SELECT 
+        SELECT
           min(num_value) as min_val,
           max(num_value) as max_val,
           avg(num_value) as avg_val,
@@ -336,7 +336,7 @@ async function getNumericStatistics(
         FROM numeric_values
       ),
       distribution AS (
-        SELECT 
+        SELECT
           floor(num_value / GREATEST((s.max_val - s.min_val) / 10, 1)) * GREATEST((s.max_val - s.min_val) / 10, 1) as bucket_start,
           count(*) as count
         FROM numeric_values, stats s
@@ -344,7 +344,7 @@ async function getNumericStatistics(
         ORDER BY bucket_start
         LIMIT 10
       )
-      SELECT 
+      SELECT
         s.min_val,
         s.max_val,
         s.avg_val,
@@ -391,7 +391,7 @@ async function getNumericStatistics(
         const bucketStart = parseFloat(item[0]);
         const count = parseInt(item[1]);
         const bucketSize = (parseFloat(data.max_val) - parseFloat(data.min_val)) / 10;
-        
+
         return {
           bucket: `${bucketStart.toFixed(2)} - ${(bucketStart + bucketSize).toFixed(2)}`,
           min: bucketStart,
@@ -456,11 +456,11 @@ function detectDataType(values: string[]): 'string' | 'number' | 'date' | 'boole
  */
 export function exportPropertyStatistics(stats: PropertyStatistics): void {
   const rows: string[] = [];
-  
+
   // Header
   rows.push('Property Statistics');
   rows.push('');
-  
+
   // Basic info
   rows.push('Property Name,' + stats.property);
   rows.push('Data Type,' + stats.dataType);
@@ -469,14 +469,14 @@ export function exportPropertyStatistics(stats: PropertyStatistics): void {
   rows.push('Null Count,' + stats.nullCount + ' (' + stats.nullPercentage.toFixed(2) + '%)');
   rows.push('Empty Count,' + stats.emptyCount + ' (' + stats.emptyPercentage.toFixed(2) + '%)');
   rows.push('');
-  
+
   // Top values
   rows.push('Top Values');
   rows.push('Value,Count,Percentage');
   stats.topValues.forEach(item => {
     rows.push(`"${item.value}",${item.count},${item.percentage.toFixed(2)}%`);
   });
-  
+
   // Numeric stats if available
   if (stats.numericStats) {
     rows.push('');
@@ -504,4 +504,3 @@ export function exportPropertyStatistics(stats: PropertyStatistics): void {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-

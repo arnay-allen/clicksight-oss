@@ -1379,6 +1379,6 @@ ORDER BY event_count DESC
 
 ---
 
-**Last Updated:** January 2025  
-**Version:** 1.0  
+**Last Updated:** January 2025
+**Version:** 1.0
 **Maintained By:** ClickSight Community

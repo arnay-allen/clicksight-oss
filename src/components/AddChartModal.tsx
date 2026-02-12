@@ -59,7 +59,7 @@ export default function AddChartModal({ visible, onClose, onChartsSelected }: Ad
       console.error('Chart ID is undefined, cannot toggle selection');
       return;
     }
-    
+
     if (selectedChartIds.includes(chartId)) {
       setSelectedChartIds(selectedChartIds.filter((id) => id !== chartId));
     } else {
@@ -70,7 +70,7 @@ export default function AddChartModal({ visible, onClose, onChartsSelected }: Ad
   const handleAddCharts = () => {
     // Filter out any undefined/null values from the selection
     const validChartIds = selectedChartIds.filter(id => id && id !== 'undefined');
-    
+
     if (validChartIds.length === 0) {
       message.warning('Please select at least one chart');
       return;
@@ -267,4 +267,3 @@ export default function AddChartModal({ visible, onClose, onChartsSelected }: Ad
     </Modal>
   );
 }
-

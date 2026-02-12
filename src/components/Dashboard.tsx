@@ -342,7 +342,7 @@ export default function Dashboard({ dashboardId, onNavigate }: DashboardProps) {
 
             // NEW: Extract metric config with backwards compatibility
             const metric = metricConfig || { type: 'total' };
-            
+
             // NEW: Get metric label for CSV header
             const getMetricLabel = (type: string, property?: string): string => {
               switch (type) {
@@ -434,7 +434,7 @@ export default function Dashboard({ dashboardId, onNavigate }: DashboardProps) {
 
       console.log('Calling exportDashboardToCSV with', chartsData.length, 'charts');
       await exportDashboardToCSV(dashboard.name, chartsData);
-      
+
       // Dismiss the loading message and show success
       message.success({ content: 'CSV exported successfully', key: 'csv-export', duration: 2 });
     } catch (error: any) {

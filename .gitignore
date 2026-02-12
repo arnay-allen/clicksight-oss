@@ -31,4 +31,3 @@ dist-ssr
 
 # Schema config overrides (for local development)
 schema.config.local.json
-

@@ -342,4 +342,3 @@ export default function DashboardsPage({ onNavigate: _onNavigate, onNavigateToDa
     </div>
   );
 }
-

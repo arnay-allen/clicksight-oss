@@ -28,13 +28,13 @@ const OPERATOR_OPTIONS = [
   { label: 'regex', value: 'regex' },
   { label: 'in (list)', value: 'in' },
   { label: 'not in (list)', value: 'not_in' },
-  
+
   { label: '> greater than', value: 'greater_than' },
   { label: '< less than', value: 'less_than' },
   { label: '>= greater or equal', value: 'greater_than_or_equal' },
   { label: '<= less or equal', value: 'less_than_or_equal' },
   { label: 'between', value: 'between' },
-  
+
   { label: 'is empty', value: 'is_empty' },
   { label: 'is not empty', value: 'is_not_empty' },
 ];
@@ -234,4 +234,3 @@ const FilterRow: React.FC<FilterRowProps> = ({
 };
 
 export default FilterRow;
-

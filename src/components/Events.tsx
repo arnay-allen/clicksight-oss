@@ -45,7 +45,7 @@ function Events() {
   // const [jsonMode, setJsonMode] = useState<Record<string, boolean>>({});
   const [activeTabByRow, setActiveTabByRow] = useState<Record<string, string>>({});
   const [tabJsonModeByRow, setTabJsonModeByRow] = useState<Record<string, Record<string, boolean>>>({});
-  
+
   // Event selection
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [availableEvents, setAvailableEvents] = useState<string[]>([]);
@@ -137,17 +137,17 @@ function Events() {
       const startDate = dateRange[0].format('YYYY-MM-DD');
       const endDate = dateRange[1].format('YYYY-MM-DD');
       const offset = reset ? 0 : loadedEvents.length;
-      
+
       // Pass filters to the query
       const result = await getRecentEvents(
-        startDate, 
-        endDate, 
-        pageSize, 
+        startDate,
+        endDate,
+        pageSize,
         offset,
         selectedEvents.length > 0 ? selectedEvents : undefined,
         filters.length > 0 ? filters : undefined
       );
-      
+
       if (reset) {
         setEvents(result.data);
         setLoadedEvents(result.data);
@@ -156,11 +156,11 @@ function Events() {
         setEvents(newEvents);
         setLoadedEvents(newEvents);
       }
-      
+
       setTotalEvents(result.total);
       setHasMore(result.data.length === pageSize);
       setLastUpdated(new Date());
-      
+
     } catch (err: any) {
       message.error('Failed to load events: ' + err.message);
     } finally {
@@ -173,11 +173,11 @@ function Events() {
     try {
       // Clear all analytics cache
       clearAnalyticsCache();
-      
+
       // Show loading state
       setLoadingEventNames(true);
       setLoadingProperties(true);
-      
+
       // Re-fetch event names
       try {
         const names = await getEventNames('app_events');
@@ -187,7 +187,7 @@ function Events() {
       } finally {
         setLoadingEventNames(false);
       }
-      
+
       // Re-fetch properties
       try {
         const props = await getEventProperties('app_events');
@@ -197,7 +197,7 @@ function Events() {
       } finally {
         setLoadingProperties(false);
       }
-      
+
       message.success('Data refreshed successfully');
     } catch (error) {
       console.error('Failed to refresh data:', error);
@@ -272,26 +272,26 @@ function Events() {
 
   const extractPropertyFromEvent = (event: EventRow, propertyPath: string): any => {
     const pixelProps = parsePixelProperties(event.pixel_properties);
-    
+
     // Handle pixel_properties fields
     if (propertyPath.includes('cf_city')) return pixelProps.cf_city || '-';
     if (propertyPath.includes('cf_state')) return pixelProps.cf_state || '-';
     if (propertyPath.includes('cf_country')) return pixelProps.cf_country || '-';
     if (propertyPath.includes('user_id')) {
       // Try multiple sources for user_id
-      return pixelProps.user_id || 
-             event.pixel_properties_user_id || 
-             event['pixel_properties.user_id'] || 
+      return pixelProps.user_id ||
+             event.pixel_properties_user_id ||
+             event['pixel_properties.user_id'] ||
              '-';
     }
-    
+
     return event[propertyPath] || '-';
   };
 
   const isPropertyEmpty = (value: any): boolean => {
-    return value === null || 
-           value === undefined || 
-           value === '' || 
+    return value === null ||
+           value === undefined ||
+           value === '' ||
            value === '-' ||
            (typeof value === 'string' && value.trim() === '');
   };
@@ -303,7 +303,7 @@ function Events() {
     const allProperties: Record<string, any> = {};
 
     const excludeFields = ['pathname', 'ist_date', 'event_timestamp', 'server_timestamp'];
-    
+
     // Add pixel properties (excluding $ and empty values)
     Object.keys(pixelProps).forEach(key => {
       const value = pixelProps[key];
@@ -316,9 +316,9 @@ function Events() {
     // Add other event properties (excluding empty values)
     Object.keys(event).forEach(key => {
       const value = event[key];
-      if (!excludeFields.includes(key) && 
-          key !== 'pixel_properties' && 
-          !key.startsWith('$') && 
+      if (!excludeFields.includes(key) &&
+          key !== 'pixel_properties' &&
+          !key.startsWith('$') &&
           !isPropertyEmpty(value)) {
         yourProperties[key] = value;
         allProperties[key] = value;
@@ -330,7 +330,7 @@ function Events() {
 
   const renderPropertyTable = (properties: Record<string, any>) => {
     const entries = Object.entries(properties);
-    
+
     if (entries.length === 0) {
       return (
         <div style={{ color: theme.colors.text.muted, padding: '20px', textAlign: 'center' }}>
@@ -338,12 +338,12 @@ function Events() {
         </div>
       );
     }
-    
+
     return (
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '8px', fontSize: '13px' }}>
         {entries.map(([key, value]) => (
           <React.Fragment key={key}>
-            <div style={{ 
+            <div style={{
               color: theme.colors.text.muted,
               fontWeight: 500,
               padding: '8px 12px',
@@ -352,7 +352,7 @@ function Events() {
             }}>
               {key}
             </div>
-            <div style={{ 
+            <div style={{
               color: theme.colors.text.primary,
               padding: '8px 12px',
               background: theme.colors.background.card,
@@ -374,7 +374,7 @@ function Events() {
   //     ...event,
   //     pixel_properties: parsePixelProperties(event.pixel_properties)
   //   };
-  //   
+  //
   //   return (
   //     <pre style={{
   //       background: theme.colors.background.card,
@@ -414,12 +414,12 @@ function Events() {
 
     const renderTabContent = (properties: any, tabKey: string) => {
       const isJsonMode = tabJsonMode[tabKey] || false;
-      
+
       return (
         <div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
             marginBottom: '12px'
           }}>
             <Button
@@ -465,9 +465,9 @@ function Events() {
         background: theme.colors.background.elevated,
         borderRadius: '8px'
       }}>
-        <div style={{ 
-          fontSize: '14px', 
-          fontWeight: 600, 
+        <div style={{
+          fontSize: '14px',
+          fontWeight: 600,
           color: theme.colors.text.primary,
           marginBottom: '16px'
         }}>
@@ -509,7 +509,7 @@ function Events() {
       render: (text: string, record: EventRow) => {
         const rowKey = record.client_reference_id;
         const isExpanded = expandedRowKeys.includes(rowKey);
-        
+
         const handleToggleExpand = (e: React.MouseEvent) => {
           e.stopPropagation(); // Prevent interference with table sorting
           if (isExpanded) {
@@ -518,9 +518,9 @@ function Events() {
             setExpandedRowKeys([...expandedRowKeys, rowKey]);
           }
         };
-        
+
         return (
-          <div 
+          <div
             style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
             onClick={handleToggleExpand}
           >
@@ -554,7 +554,7 @@ function Events() {
         const displayDate = record.ist_date || record.server_timestamp;
         // const displayTime = dayjs(displayDate).format('MMM DD, YYYY HH:mm');
         const tooltipTime = dayjs(record.server_timestamp).format('YYYY-MM-DD HH:mm:ss');
-        
+
         return (
           <Tooltip title={`Server: ${tooltipTime} | IST Date: ${record.ist_date}`}>
             <span style={{ color: theme.colors.text.secondary, fontSize: '12px' }}>
@@ -856,9 +856,9 @@ function Events() {
         border: `1px solid ${theme.colors.border.subtle}`,
         borderRadius: '8px'
       }}>
-        <div style={{ 
-          fontSize: '12px', 
-          fontWeight: 600, 
+        <div style={{
+          fontSize: '12px',
+          fontWeight: 600,
           color: theme.colors.text.secondary,
           marginBottom: '12px',
           textTransform: 'uppercase',
@@ -866,7 +866,7 @@ function Events() {
         }}>
           SELECT EVENT
         </div>
-        
+
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
           {selectedEvents.map(event => (
             <div
@@ -891,8 +891,8 @@ function Events() {
               }} />
               <span>{event}</span>
               <CloseOutlined
-                style={{ 
-                  fontSize: '10px', 
+                style={{
+                  fontSize: '10px',
                   cursor: 'pointer',
                   color: theme.colors.text.muted
                 }}
@@ -902,7 +902,7 @@ function Events() {
               />
             </div>
           ))}
-          
+
           <Dropdown
             open={showEventDropdown}
             onOpenChange={setShowEventDropdown}
@@ -980,8 +980,8 @@ function Events() {
                 <span style={{ color: theme.colors.text.muted }}>{filter.operator}</span>
                 <span style={{ color: theme.colors.text.primary, fontWeight: 500 }}>"{filter.value}"</span>
                 <CloseOutlined
-                  style={{ 
-                    fontSize: '10px', 
+                  style={{
+                    fontSize: '10px',
                     cursor: 'pointer',
                     color: theme.colors.text.muted
                   }}
@@ -1044,10 +1044,10 @@ function Events() {
           borderRadius: '8px',
           border: `1px solid ${theme.colors.border.subtle}`
         }}>
-          <div style={{ 
-            color: theme.colors.text.muted, 
-            fontSize: '13px', 
-            marginBottom: '12px' 
+          <div style={{
+            color: theme.colors.text.muted,
+            fontSize: '13px',
+            marginBottom: '12px'
           }}>
             Showing {Number(loadedEvents.length).toLocaleString('en-US')} results through {dayjs().format('MMM D, YYYY, h:mm A')}
           </div>

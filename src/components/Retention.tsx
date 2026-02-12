@@ -42,7 +42,7 @@ function Retention() {
     try {
       const events = await getEventNames('app_events');
       setAvailableEvents(events);
-      
+
       // Auto-select common events if available
       if (events.includes('app_open') && !activationEvent) {
         setActivationEvent('app_open');
@@ -409,4 +409,3 @@ function Retention() {
 }
 
 export default Retention;
-

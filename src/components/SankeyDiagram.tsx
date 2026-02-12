@@ -51,7 +51,7 @@ const SankeyDiagram: React.FC<SankeyDiagramProps> = ({
     edges.forEach((edge) => {
       const sourceKey = edge.source; // e.g., "API_TIME_TAKEN_pos1"
       const targetKey = edge.target; // e.g., "page_loaded_pos2"
-      
+
       // Extract display names (remove position suffix)
       const sourceDisplayName = sourceKey.replace(/_pos\d+$/, '');
       const targetDisplayName = targetKey.replace(/_pos\d+$/, '');
@@ -218,4 +218,3 @@ const SankeyDiagram: React.FC<SankeyDiagramProps> = ({
 };
 
 export default SankeyDiagram;
-

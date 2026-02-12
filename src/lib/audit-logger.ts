@@ -166,7 +166,7 @@ function escapeString(str: string): string {
  */
 function estimateResultSize(result?: CustomQueryResult): number {
   if (!result || !result.data) return 0;
-  
+
   try {
     // Rough estimate: JSON stringified size
     const jsonString = JSON.stringify(result.data);
@@ -187,11 +187,10 @@ export function parseClickHouseError(errorMessage: string): {
   // Example: "Code: 158. DB::Exception: ..."
   const codeMatch = errorMessage.match(/Code:\s*(\d+)/);
   const typeMatch = errorMessage.match(/DB::Exception:\s*([^.]+)/);
-  
+
   return {
     code: codeMatch ? parseInt(codeMatch[1]) : undefined,
     type: typeMatch ? typeMatch[1].split(':')[0].trim() : undefined,
     message: errorMessage,
   };
 }
-

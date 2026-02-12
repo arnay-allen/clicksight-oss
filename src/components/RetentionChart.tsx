@@ -23,7 +23,7 @@ const RetentionChart: React.FC<RetentionChartProps> = ({ data, title = 'Retentio
   }
 
   // Transform data for Recharts
-  // We need to create a dataset where each row represents a day, 
+  // We need to create a dataset where each row represents a day,
   // and each cohort is a separate line
   const allDays = new Set<number>();
   data.forEach(cohort => {
@@ -33,12 +33,12 @@ const RetentionChart: React.FC<RetentionChartProps> = ({ data, title = 'Retentio
 
   const chartData = sortedDays.map(day => {
     const dataPoint: any = { day: `Day ${day}` };
-    
+
     data.forEach((cohort, index) => {
       const point = cohort.retentionData.find(p => p.day === day);
       dataPoint[`cohort_${index}`] = point ? point.retentionRate : null;
     });
-    
+
     return dataPoint;
   });
 
@@ -93,4 +93,3 @@ const RetentionChart: React.FC<RetentionChartProps> = ({ data, title = 'Retentio
 };
 
 export default RetentionChart;
-

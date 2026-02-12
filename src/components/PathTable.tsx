@@ -25,7 +25,7 @@ const PathTable: React.FC<PathTableProps> = ({ sequences, totalUsers }) => {
 
   // Dynamic columns based on max path length
   const maxLength = Math.max(...sequences.map(s => s.sequence.length), 0);
-  
+
   const stepColumns: ColumnsType<TableDataType> = Array.from({ length: maxLength }, (_, i) => ({
     title: `Step ${i + 1}`,
     key: `step-${i}`,
@@ -98,8 +98,8 @@ const PathTable: React.FC<PathTableProps> = ({ sequences, totalUsers }) => {
   }
 
   return (
-    <Card 
-      title="Path Details Table" 
+    <Card
+      title="Path Details Table"
       style={{ marginBottom: 24 }}
       extra={
         <Text type="secondary">
@@ -125,4 +125,3 @@ const PathTable: React.FC<PathTableProps> = ({ sequences, totalUsers }) => {
 };
 
 export default PathTable;
-

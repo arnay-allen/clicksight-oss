@@ -78,4 +78,3 @@ export function formatPropertyValue(value: any): string {
   }
   return String(value);
 }
-

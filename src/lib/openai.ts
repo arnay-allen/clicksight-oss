@@ -213,7 +213,7 @@ Analyze the query results and provide actionable insights based on the user's qu
 - Be specific with numbers and percentages
 - Suggest actionable next steps`;
 
-  const userPrompt = userQuestion 
+  const userPrompt = userQuestion
     ? `**User's Question:** ${userQuestion}
 
 **SQL Query:**
@@ -246,4 +246,3 @@ Analyze these results and provide key insights.`;
 
   return { analysis: response, usage };
 }
-

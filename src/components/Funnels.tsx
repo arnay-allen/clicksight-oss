@@ -44,7 +44,7 @@ interface FunnelsProps {
 }
 
 function Funnels({ onNavigate }: FunnelsProps = {}) {
-  
+
   const [funnelSteps, setFunnelSteps] = useState<FunnelStepUI[]>([]);
   const [eventsByTable, setEventsByTable] = useState<Record<string, string[]>>({});
   const [propertiesByTable, setPropertiesByTable] = useState<Record<string, string[]>>({});
@@ -63,15 +63,15 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
   const [eventsLoading, setEventsLoading] = useState<Record<string, boolean>>({});
   const [propertiesLoading, setPropertiesLoading] = useState<Record<string, boolean>>({});
   const [propertyValueSuggestions, setPropertyValueSuggestions] = useState<Record<string, string[]>>({});
-  
+
   // NEW: Metric configuration state
   const [metricType, setMetricType] = useState<MetricType>('total');
   const [metricProperty, setMetricProperty] = useState<string>('');
-  
+
   // Chart save/load state
   const [saveChartModalVisible, setSaveChartModalVisible] = useState(false);
   const [chartLibraryVisible, setChartLibraryVisible] = useState(false);
-  
+
   // Track loaded chart for update vs. save-as-new
   const [loadedChartId, setLoadedChartId] = useState<string | null>(null);
   const [loadedChartName, setLoadedChartName] = useState<string | null>(null);
@@ -107,18 +107,18 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
   useEffect(() => {
     // Use a flag to prevent multiple executions
     let chartLoaded = false;
-    
+
     const checkSessionStorage = () => {
       if (chartLoaded) {
         return;
       }
-      
+
       const chartToLoadStr = sessionStorage.getItem('chartToLoad');
-      
+
       if (chartToLoadStr) {
         try {
           const chart = JSON.parse(chartToLoadStr);
-          
+
           if (chart.chart_category === 'funnels') {
             chartLoaded = true;
             sessionStorage.removeItem('chartToLoad');
@@ -130,10 +130,10 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
         }
       }
     };
-    
+
     // Check after a small delay to ensure sessionStorage is written
     const timeoutId = setTimeout(checkSessionStorage, 150);
-    
+
     return () => {
       clearTimeout(timeoutId);
     };
@@ -144,7 +144,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     if (eventsByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setEventsLoading(prev => ({ ...prev, [table]: true }));
       const events = await getEventNames(table);
@@ -161,7 +161,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     if (propertiesByTable[table]) {
       return; // Already loaded
     }
-    
+
     try {
       setPropertiesLoading(prev => ({ ...prev, [table]: true }));
       const properties = await getEventProperties('', table);
@@ -281,7 +281,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
 
   const calculateFunnel = async () => {
     const validSteps = funnelSteps.filter(step => step.table && step.event);
-    
+
     if (validSteps.length < 2) {
       setError('Please add at least 2 steps to the funnel');
       return;
@@ -296,17 +296,17 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     try {
       setLoading(true);
       setError('');
-      
+
       const [startDate, endDate] = dateRange;
       const start = startDate.format('YYYY-MM-DD');
       const end = endDate.format('YYYY-MM-DD');
-      
+
       // NEW: Build metric config
       const metricConfig = {
         type: metricType,
         property: metricProperty || undefined
       };
-      
+
       if (breakdownProperties.length > 0 && breakdownProperties.some(bp => bp.property)) {
         // Get funnel with breakdown
         const validBreakdowns = breakdownProperties.filter(bp => bp.property);
@@ -348,7 +348,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
   const buildChartConfig = () => {
     // Detect if current date range matches a relative pattern
     const detectedConfig = detectDateRangeType(dateRange[0], dateRange[1]);
-    
+
     return {
       funnelSteps: funnelSteps,
       dateRangeConfig: detectedConfig,  // Store relative date range config
@@ -360,7 +360,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
       }
     };
   };
-  
+
   // NEW: Helper function to get metric label
   const getMetricLabel = (type: MetricType, property?: string): string => {
     switch (type) {
@@ -388,16 +388,16 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     try {
       // Show full-screen loading overlay
       setInitialChartLoading(true);
-      
+
       const config = JSON.parse(chart.config);
-      
+
       // Track loaded chart metadata for update functionality
       setLoadedChartId(chart.id);
       setLoadedChartName(chart.name);
       setLoadedChartDescription(chart.description || '');
       setLoadedChartType(chart.chart_type || 'horizontal-bar');
       setLoadedChartPermission(chart.permission);
-      
+
       // Restore date range (support both old and new formats)
       if (config.dateRangeConfig) {
         // New format: relative date range config
@@ -417,17 +417,17 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
         );
         setDateRangeType(detectedConfig.type);
       }
-      
+
       // Restore time window
       if (config.timeWindow !== undefined) {
         setTimeWindow(config.timeWindow);
       }
-      
+
       // Restore breakdown properties
       if (config.breakdownProperties) {
         setBreakdownProperties(config.breakdownProperties);
       }
-      
+
       // NEW: Restore metric config (with backwards compatibility)
       if (config.metricConfig) {
         setMetricType(config.metricConfig.type || 'total');
@@ -445,10 +445,10 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
           await loadPropertiesForTable(step.table);
         }
       }));
-      
+
       // NOW restore funnel steps after events are loaded
       setFunnelSteps(config.funnelSteps || []);
-      
+
       // Clear loading overlay - all components are now populated
       setInitialChartLoading(false);
     } catch (error) {
@@ -469,7 +469,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     try {
       // Clear all analytics cache
       clearAnalyticsCache();
-      
+
       // Re-fetch event names for the configured table
       const tableName = schemaAdapter.getTableName();
       setEventsLoading({ ...eventsLoading, [tableName]: true });
@@ -481,7 +481,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
       } finally {
         setEventsLoading({ ...eventsLoading, [tableName]: false });
       }
-      
+
       message.success('Data refreshed successfully');
     } catch (error) {
       console.error('Failed to refresh data:', error);
@@ -494,7 +494,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     // If breakdown is used, export the breakdown section instead
     const hasBreakdown = Object.keys(funnelBreakdowns).length > 0;
     const elementId = hasBreakdown ? 'funnel-breakdown-container' : 'funnel-chart-container';
-    
+
     const chartElement = document.getElementById(elementId);
     if (chartElement) {
       const filename = `funnel-${dayjs().format('YYYY-MM-DD-HHmmss')}.png`;
@@ -515,10 +515,10 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
     }
 
     const filename = `funnel-${dayjs().format('YYYY-MM-DD-HHmmss')}.csv`;
-    
+
     // NEW: Get metric label for CSV header
     const metricColumnName = getMetricLabel(metricType, metricProperty).toLowerCase().replace(/ /g, '_');
-    
+
     // If we have breakdown data, flatten it for export
     if (hasBreakdownData) {
       const rows: any[] = [];
@@ -550,7 +550,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
 
   return (
     <div>
-      <Card 
+      <Card
         title={
           <Space>
             <span>Funnel Analysis</span>
@@ -616,8 +616,8 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
             {funnelSteps.length > 0 && (
               <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: 600, fontSize: 16 }}>Funnel Steps</span>
-                <Button 
-                  type="dashed" 
+                <Button
+                  type="dashed"
                   icon={<PlusOutlined />}
                   onClick={addFunnelStep}
                   disabled={funnelSteps.length >= 10}
@@ -626,11 +626,11 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 </Button>
               </div>
             )}
-            
+
             {funnelSteps.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   size="large"
                   icon={<PlusOutlined />}
                   onClick={addFunnelStep}
@@ -642,7 +642,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 </div>
               </div>
             )}
-            
+
             {funnelSteps.map((step, index) => (
               <div key={step.id} style={{ marginBottom: 12 }}>
                 {index > 0 && (
@@ -650,9 +650,9 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                     <DownOutlined style={{ fontSize: 16, color: '#888' }} />
                   </div>
                 )}
-                <Card 
-                  size="small" 
-                  style={{ 
+                <Card
+                  size="small"
+                  style={{
                     borderLeft: `4px solid ${STEP_COLORS[index % STEP_COLORS.length]}`
                   }}
                 >
@@ -681,9 +681,9 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                         />
                       </Col>
                       <Col span={2}>
-                        <Button 
-                          type="text" 
-                          danger 
+                        <Button
+                          type="text"
+                          danger
                           icon={<DeleteOutlined />}
                           onClick={() => removeStep(step.id)}
                           disabled={funnelSteps.length === 1}
@@ -868,8 +868,8 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
               <div style={{ marginBottom: 16 }}>
                 <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: 600, fontSize: 16 }}>Breakdown By (optional)</span>
-                  <Button 
-                    type="dashed" 
+                  <Button
+                    type="dashed"
                     icon={<PlusOutlined />}
                     onClick={() => {
                       if (breakdownProperties.length < 3) {
@@ -891,14 +891,14 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
 
                 {breakdownProperties.map((bp, index) => {
                   const isDateProperty = bp.property && (
-                    bp.property.toLowerCase().includes('date') || 
+                    bp.property.toLowerCase().includes('date') ||
                     bp.property.toLowerCase().includes('time') ||
                     bp.property === 'ist_date' ||
                     bp.property === 'event_timestamp'
                   );
 
                   return (
-                    <Card 
+                    <Card
                       key={index}
                       size="small"
                       style={{ marginBottom: 12 }}
@@ -954,9 +954,9 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                           </Col>
                         )}
                         <Col span={2}>
-                          <Button 
-                            type="text" 
-                            danger 
+                          <Button
+                            type="text"
+                            danger
                             icon={<DeleteOutlined />}
                             onClick={() => {
                               setBreakdownProperties(breakdownProperties.filter((_, i) => i !== index));
@@ -975,8 +975,8 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 )}
               </div>
 
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 onClick={calculateFunnel}
                 loading={loading}
                 size="large"
@@ -987,11 +987,11 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
               </Button>
 
               {error && loading === false && (
-                <Alert 
-                  message="Error" 
-                  description={error} 
-                  type="error" 
-                  closable 
+                <Alert
+                  message="Error"
+                  description={error}
+                  type="error"
+                  closable
                   onClose={() => setError('')}
                 />
               )}
@@ -1044,8 +1044,8 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
           <Card title="Step-by-Step Breakdown" style={{ marginBottom: 16 }}>
             <Space direction="vertical" size="middle" style={{ width: '100%' }}>
               {funnelResults.map((result, index) => (
-                <Card 
-                  key={result.step} 
+                <Card
+                  key={result.step}
                   size="small"
                   style={{ borderLeft: `4px solid ${STEP_COLORS[index % STEP_COLORS.length]}` }}
                 >
@@ -1088,14 +1088,14 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
           <div id="funnel-chart-container">
           <Card title="Funnel Visualization">
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart 
+              <BarChart
                 data={funnelResults}
                 layout="vertical"
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
                 <YAxis dataKey="stepName" type="category" width={250} />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: any, name: string) => {
                     if (name === 'count') return [value.toLocaleString(), 'Users'];
                     if (name === 'conversionRate') return [`${value.toFixed(1)}%`, 'Conversion'];
@@ -1121,7 +1121,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
       {!loading && funnelBreakdowns.length > 0 && (
         <div id="funnel-breakdown-container">
           {/* Combined Chart for All Segments */}
-          <Card 
+          <Card
             title={
               <div>
                 Funnel Comparison - {' '}
@@ -1143,7 +1143,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
             style={{ marginBottom: 16 }}
           >
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart 
+              <BarChart
                 data={(() => {
                   // Transform breakdown data to combined format
                   if (funnelBreakdowns.length === 0) return [];
@@ -1160,10 +1160,10 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 margin={{ top: 10, right: 30, left: 100, bottom: 40 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  type="number" 
-                  stroke="#888" 
-                  style={{ fontSize: 11 }} 
+                <XAxis
+                  type="number"
+                  stroke="#888"
+                  style={{ fontSize: 11 }}
                   tickFormatter={(value) => {
                     if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
                     if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
@@ -1207,7 +1207,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
           </Card>
 
           {/* Individual Segment Details */}
-          <Card 
+          <Card
             title={
               <div>
                 Detailed Breakdown by Segment
@@ -1220,10 +1220,10 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 const overallConv = breakdown.steps[0].count > 0
                   ? ((breakdown.steps[breakdown.steps.length - 1].count / breakdown.steps[0].count) * 100).toFixed(1)
                   : '0.0';
-                
+
                 return (
-                  <Card 
-                    key={breakdown.segmentName} 
+                  <Card
+                    key={breakdown.segmentName}
                     size="small"
                     title={
                       <div>
@@ -1264,20 +1264,20 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
 
                     {/* Funnel Visualization for this segment */}
                     <ResponsiveContainer width="100%" height={Math.max(250, breakdown.steps.length * 80)}>
-                      <BarChart 
+                      <BarChart
                         data={breakdown.steps}
                         layout="vertical"
                         margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" />
-                        <YAxis 
-                          dataKey="stepName" 
-                          type="category" 
+                        <YAxis
+                          dataKey="stepName"
+                          type="category"
                           width={200}
                           tick={{ fontSize: 12 }}
                         />
-                        <Tooltip 
+                        <Tooltip
                           formatter={(value: any, name: string) => {
                             if (name === 'count') return [value.toLocaleString(), 'Users'];
                             if (name === 'conversionRate') return [`${value.toFixed(2)}%`, 'Conversion'];
@@ -1286,9 +1286,9 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                         />
                         <Bar dataKey="count" name="Users" fill={STEP_COLORS[breakdownIndex % STEP_COLORS.length]}>
                           {breakdown.steps.map((_entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={STEP_COLORS[index % STEP_COLORS.length]} 
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={STEP_COLORS[index % STEP_COLORS.length]}
                             />
                           ))}
                         </Bar>
@@ -1303,7 +1303,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
           {/* Comparison Chart */}
           <Card title="Conversion Comparison">
             <ResponsiveContainer width="100%" height={Math.max(300, funnelBreakdowns.length * 60)}>
-              <BarChart 
+              <BarChart
                 data={funnelBreakdowns.map((breakdown) => ({
                   segment: breakdown.segmentName,
                   conversion: breakdown.steps[0].count > 0
@@ -1316,7 +1316,7 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="segment" />
                 <YAxis label={{ value: 'Conversion %', angle: -90, position: 'insideLeft' }} />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: any, name: string) => {
                     if (name === 'Conversion Rate (%)' || name === 'conversion') {
                       const rounded = Math.round(Number(value) * 100) / 100;
@@ -1386,4 +1386,3 @@ function Funnels({ onNavigate }: FunnelsProps = {}) {
 }
 
 export default Funnels;
-

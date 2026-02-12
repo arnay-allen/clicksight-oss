@@ -53,7 +53,7 @@ export async function exportToPNG(element: HTMLElement, filename: string = 'char
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        
+
         message.success({ content: 'PNG exported successfully!', key: 'export' });
       } else {
         throw new Error('Failed to create blob');
@@ -89,7 +89,7 @@ export async function exportToJPG(element: HTMLElement, filename: string = 'char
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        
+
         message.success({ content: 'JPG exported successfully!', key: 'export' });
       } else {
         throw new Error('Failed to create blob');
@@ -124,7 +124,7 @@ export async function exportToPDF(element: HTMLElement, filename: string = 'char
 
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save(filename);
-    
+
     message.success({ content: 'PDF exported successfully!', key: 'export' });
   } catch (error: any) {
     console.error('Error exporting PDF:', error);
@@ -138,7 +138,7 @@ export async function exportToPDF(element: HTMLElement, filename: string = 'char
 export function exportToCSV(data: any[], filename: string = 'data.csv', headers?: string[]): void {
   try {
     message.loading({ content: 'Generating CSV...', key: 'export', duration: 0 });
-    
+
     if (data.length === 0) {
       message.warning({ content: 'No data to export', key: 'export' });
       return;
@@ -146,11 +146,11 @@ export function exportToCSV(data: any[], filename: string = 'data.csv', headers?
 
     // Get headers from data if not provided
     const csvHeaders = headers || Object.keys(data[0]);
-    
+
     // Build CSV content
     const csvContent = [
       csvHeaders.join(','), // Header row
-      ...data.map(row => 
+      ...data.map(row =>
         csvHeaders.map(header => {
           const value = row[header];
           // Escape commas and quotes
@@ -172,7 +172,7 @@ export function exportToCSV(data: any[], filename: string = 'data.csv', headers?
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     message.success({ content: 'CSV exported successfully!', key: 'export' });
   } catch (error: any) {
     console.error('Error exporting CSV:', error);
@@ -353,4 +353,3 @@ ${chartsData.map((c, i) => `  ${i + 1}_${c.name.replace(/[^a-z0-9]/gi, '_')}.csv
     message.error({ content: `Failed to export CSV: ${error.message}`, key: 'dashboard-export' });
   }
 }
-

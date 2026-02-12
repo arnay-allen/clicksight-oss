@@ -45,7 +45,7 @@ function Cohorts() {
     try {
       const events = await getEventNames('app_events');
       setAvailableEvents(events);
-      
+
       // Auto-select common events if available
       if (events.includes('app_open') && !activationEvent) {
         setActivationEvent('app_open');
@@ -85,7 +85,7 @@ function Cohorts() {
 
       // Calculate statistics
       setTotalCohorts(data.length);
-      
+
       const totalUsersCount = data.reduce((sum, cohort) => sum + cohort.cohortSize, 0);
       setTotalUsers(totalUsersCount);
 
@@ -345,4 +345,3 @@ function Cohorts() {
 }
 
 export default Cohorts;
-

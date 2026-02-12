@@ -26,7 +26,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({
   useEffect(() => {
     try {
       const parsedConfig = JSON.parse(chartConfig);
-      
+
       // Convert relative date ranges to absolute dates
       if (parsedConfig.dateRangeConfig) {
         const [start, end] = getAbsoluteDateRange(parsedConfig.dateRangeConfig);
@@ -35,7 +35,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({
           end: end.format('YYYY-MM-DD'),
         };
       }
-      
+
       setConfig(parsedConfig);
       setError(null);
     } catch (err: any) {
@@ -76,4 +76,3 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({
 };
 
 export default ChartRenderer;
-

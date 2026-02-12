@@ -28,7 +28,7 @@ export interface RetentionResult {
 
 /**
  * Calculate retention for users across specified periods
- * 
+ *
  * Logic:
  * 1. Identify cohort users (first time they performed activation event)
  * 2. Track when they return (performed return event N days later)
@@ -58,10 +58,10 @@ export async function calculateRetention(config: RetentionConfig): Promise<Reten
 
   // Build the query with optimized CTEs
   const query = `
-    WITH 
+    WITH
     -- Pre-compute user_identifier for performance (avoid repeated computation)
     base_events AS (
-      SELECT 
+      SELECT
         ${userIdentifier} as user_identifier,
         ${eventNameCol} as event_name,
         ${dateCol} as event_date
@@ -73,7 +73,7 @@ export async function calculateRetention(config: RetentionConfig): Promise<Reten
     ),
     cohort_users AS (
       -- Step 1: Identify cohort users with their cohort date (first activation)
-      SELECT 
+      SELECT
         user_identifier,
         min(event_date) as cohort_date
       FROM base_events
@@ -82,7 +82,7 @@ export async function calculateRetention(config: RetentionConfig): Promise<Reten
     ),
     retention_events AS (
       -- Step 2: Join with all return events to calculate days since cohort
-      SELECT 
+      SELECT
         c.cohort_date,
         c.user_identifier,
         dateDiff('day', c.cohort_date, e.event_date) as days_since_cohort
@@ -94,14 +94,14 @@ export async function calculateRetention(config: RetentionConfig): Promise<Reten
     ),
     cohort_sizes AS (
       -- Get cohort sizes (Day 0)
-      SELECT 
+      SELECT
         cohort_date,
         count(DISTINCT user_identifier) as cohort_size
       FROM cohort_users
       GROUP BY cohort_date
     )
     -- Step 3: Calculate retention for each period
-    SELECT 
+    SELECT
       r.cohort_date,
       r.days_since_cohort as day,
       count(DISTINCT r.user_identifier) as retained_users,
@@ -160,7 +160,7 @@ export async function calculateAverageRetention(config: RetentionConfig): Promis
   totalCohortSize: number;
 }[]> {
   const result = await calculateRetention(config);
-  
+
   // Aggregate retention data across all cohorts
   const periodMap = new Map<number, { retained: number; total: number }>();
 
@@ -201,19 +201,18 @@ export function exportRetentionToCSV(data: RetentionDataPoint[]): string {
 
   // Build CSV header
   const header = ['Cohort Date', 'Cohort Size', ...sortedDays.map(d => `Day ${d}`)];
-  
+
   // Build CSV rows
   const rows = data.map(cohort => {
     const row = [cohort.cohortDate, cohort.cohortSize.toString()];
-    
+
     sortedDays.forEach(day => {
       const point = cohort.retentionData.find(p => p.day === day);
       row.push(point ? `${point.retentionRate.toFixed(2)}%` : '-');
     });
-    
+
     return row.join(',');
   });
 
   return [header.join(','), ...rows].join('\n');
 }
-

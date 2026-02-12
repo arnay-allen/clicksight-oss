@@ -88,13 +88,13 @@ const ShareChartModal: React.FC<ShareChartModalProps> = ({ visible, chart, onClo
     setSharing(true);
     try {
       await shareChart(chart.id, selectedUsers, permission, user.id);
-      
+
       // Wait for ClickHouse INSERT mutation to propagate
       await new Promise(resolve => setTimeout(resolve, 300));
-      
+
       // Reload data to update the shared users list
       await loadData();
-      
+
       message.success(`Chart shared with ${selectedUsers.length} user(s)`);
       setSelectedUsers([]);
     } catch (error: any) {
@@ -117,15 +117,15 @@ const ShareChartModal: React.FC<ShareChartModalProps> = ({ visible, chart, onClo
     try {
       // Revoke access in database
       await revokeChartShare(chart.id, userId);
-      
+
       // Wait briefly for ClickHouse ALTER UPDATE mutation to propagate
       // ClickHouse mutations are asynchronous and may not be immediately visible
       await new Promise(resolve => setTimeout(resolve, 300));
-      
+
       // Reload data to refresh both shared users list and available users list
       // loadData() handles its own loading state
       await loadData();
-      
+
       // Show success message only after data is reloaded
       message.success(`Access revoked for ${userName}`);
     } catch (error: any) {
@@ -315,4 +315,3 @@ const ShareChartModal: React.FC<ShareChartModalProps> = ({ visible, chart, onClo
 };
 
 export default ShareChartModal;
-

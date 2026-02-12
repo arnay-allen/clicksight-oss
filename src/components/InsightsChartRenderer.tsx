@@ -60,7 +60,7 @@ const InsightsChartRenderer: React.FC<InsightsChartRendererProps> = ({ config, h
   const loadWithoutBreakdown = async (dataSources: any[], dateRange: any, granularity: string) => {
     // Check if metric config is provided
     const metricConfig: MetricConfig = (config.metricConfig) || { type: 'total' };
-    
+
     const allPromises = dataSources.flatMap((ds: any) =>
       ds.events.map((eventName: string) =>
         getEventMetric(
@@ -106,7 +106,7 @@ const InsightsChartRenderer: React.FC<InsightsChartRendererProps> = ({ config, h
   ) => {
     // Check if metric config is provided
     const metricConfig: MetricConfig = (config.metricConfig) || { type: 'total' };
-    
+
     const allPromises = dataSources.flatMap((ds: any) =>
       ds.events.map((eventName: string) =>
         getEventMetricWithBreakdown(
@@ -246,4 +246,3 @@ const InsightsChartRenderer: React.FC<InsightsChartRendererProps> = ({ config, h
 };
 
 export default InsightsChartRenderer;
-

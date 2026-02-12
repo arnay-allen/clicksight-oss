@@ -48,7 +48,7 @@ const PropertyExplorer: React.FC = () => {
     setSelectedProperty(property);
     setStatsLoading(true);
     setPropertyStats(null);
-    
+
     try {
       const [startDate, endDate] = dateRange;
       const stats = await getPropertyStatistics(
@@ -168,12 +168,12 @@ const PropertyExplorer: React.FC = () => {
       width: '12%',
       render: (_: any, record: PropertyInfo) => {
         const nullEmptyCount = record.nullCount + record.emptyCount;
-        const percentage = record.totalCount > 0 
+        const percentage = record.totalCount > 0
           ? ((nullEmptyCount / record.totalCount) * 100).toFixed(1)
           : '0';
         return `${nullEmptyCount.toLocaleString()} (${percentage}%)`;
       },
-      sorter: (a: PropertyInfo, b: PropertyInfo) => 
+      sorter: (a: PropertyInfo, b: PropertyInfo) =>
         (a.nullCount + a.emptyCount) - (b.nullCount + b.emptyCount),
     },
     {
@@ -283,7 +283,7 @@ const PropertyExplorer: React.FC = () => {
               dataSource={properties}
               columns={propertyColumns}
               rowKey="name"
-              pagination={{ 
+              pagination={{
                 pageSize: pageSize,
                 showSizeChanger: true,
                 pageSizeOptions: ['10', '20', '50', '100'],
@@ -412,8 +412,8 @@ const PropertyExplorer: React.FC = () => {
                           <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={propertyStats.numericStats.distribution}>
                               <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis 
-                                dataKey="bucket" 
+                              <XAxis
+                                dataKey="bucket"
                                 angle={-45}
                                 textAnchor="end"
                                 height={80}
@@ -437,8 +437,8 @@ const PropertyExplorer: React.FC = () => {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={propertyStats.topValues}>
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis 
-                              dataKey="value" 
+                            <XAxis
+                              dataKey="value"
                               angle={-45}
                               textAnchor="end"
                               height={80}
@@ -476,4 +476,3 @@ const PropertyExplorer: React.FC = () => {
 };
 
 export default PropertyExplorer;
-

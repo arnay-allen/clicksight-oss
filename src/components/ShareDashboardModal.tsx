@@ -220,4 +220,3 @@ export default function ShareDashboardModal({ visible, dashboard, onClose }: Sha
     </Modal>
   );
 }
-

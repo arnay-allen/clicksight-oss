@@ -40,7 +40,7 @@ export function validateQuery(sql: string): ValidationResult {
   // Check for multiple statements (semicolons not at the end)
   const semicolonCount = (normalized.match(/;/g) || []).length;
   const endsWithSemicolon = normalized.endsWith(';');
-  
+
   if (semicolonCount > 1 || (semicolonCount === 1 && !endsWithSemicolon)) {
     return {
       isValid: false,
@@ -89,7 +89,7 @@ export function validateQuery(sql: string): ValidationResult {
 export function sanitizeQuery(sql: string): string {
   // Remove SQL comments
   let sanitized = removeComments(sql);
-  
+
   // Normalize whitespace but preserve line breaks for readability
   sanitized = sanitized
     .split('\n')
@@ -106,10 +106,10 @@ export function sanitizeQuery(sql: string): string {
 function removeComments(sql: string): string {
   // Remove single-line comments (-- ...)
   let result = sql.replace(/--[^\n]*/g, '');
-  
+
   // Remove multi-line comments (/* ... */)
   result = result.replace(/\/\*[\s\S]*?\*\//g, '');
-  
+
   return result;
 }
 
@@ -130,7 +130,7 @@ export function getExampleQueries(): Array<{ name: string; description: string; 
       name: 'Daily Active Users',
       description: 'Count unique users per day for the last 30 days',
       query: `-- Daily Active Users (last 30 days)
-SELECT 
+SELECT
   ist_date,
   uniq(pixel_properties_user_id) as dau
 FROM app_events
@@ -142,7 +142,7 @@ ORDER BY ist_date;`
       name: 'Top Events',
       description: 'Top 10 events by count in the last 7 days',
       query: `-- Top 10 Events by Count
-SELECT 
+SELECT
   event_name,
   count(*) as count
 FROM app_events
@@ -155,7 +155,7 @@ LIMIT 10;`
       name: 'Hourly Distribution',
       description: 'Event distribution by hour for today',
       query: `-- Hourly Event Distribution (today)
-SELECT 
+SELECT
   toHour(server_timestamp) as hour,
   count(*) as events
 FROM app_events
@@ -167,7 +167,7 @@ ORDER BY hour;`
       name: 'Top Cities',
       description: 'Top 10 cities by unique users',
       query: `-- Top 10 Cities by Unique Users
-SELECT 
+SELECT
   JSONExtractString(pixel_properties, 'cf_city') as city,
   uniq(pixel_properties_user_id) as users
 FROM app_events
@@ -180,7 +180,7 @@ LIMIT 10;`
       name: 'Event Properties',
       description: 'Explore all properties for a specific event',
       query: `-- Event Properties Explorer
-SELECT 
+SELECT
   event_name,
   count(*) as event_count,
   uniq(pixel_properties_user_id) as unique_users,
@@ -194,7 +194,7 @@ GROUP BY event_name;`
       name: 'User Journey',
       description: 'First 5 events for each user',
       query: `-- User Journey (first 5 events per user)
-SELECT 
+SELECT
   pixel_properties_user_id,
   groupArray(5)(event_name) as event_sequence,
   min(server_timestamp) as first_event_time
@@ -206,4 +206,3 @@ LIMIT 100;`
     }
   ];
 }
-

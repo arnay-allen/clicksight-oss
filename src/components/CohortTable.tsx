@@ -39,7 +39,7 @@ const CohortTable: React.FC<CohortTableProps> = ({
     );
   }
 
-  const periodLabel = cohortPeriod === 'daily' ? 'Day' : 
+  const periodLabel = cohortPeriod === 'daily' ? 'Day' :
                       cohortPeriod === 'weekly' ? 'Week' : 'Month';
 
   // Build table columns
@@ -72,7 +72,7 @@ const CohortTable: React.FC<CohortTableProps> = ({
       render: (value: number | undefined) => {
         const bgColor = getHeatmapColor(value);
         const textColor = value !== undefined && value >= 60 ? '#fff' : '#000';
-        
+
         return (
           <div
             style={{
@@ -100,7 +100,7 @@ const CohortTable: React.FC<CohortTableProps> = ({
   }));
 
   return (
-    <Card 
+    <Card
       style={{ marginTop: 24 }}
       title={
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -138,7 +138,7 @@ const CohortTable: React.FC<CohortTableProps> = ({
           </div>
         </div>
       </div>
-      
+
       <Table
         columns={columns}
         dataSource={tableData}
@@ -152,4 +152,3 @@ const CohortTable: React.FC<CohortTableProps> = ({
 };
 
 export default CohortTable;
-

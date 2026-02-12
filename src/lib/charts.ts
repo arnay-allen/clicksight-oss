@@ -122,7 +122,7 @@ export async function saveChart(
   const escapedConfig = JSON.stringify(config).replace(/'/g, "''");
 
   const query = `
-    INSERT INTO clicksight.saved_charts 
+    INSERT INTO clicksight.saved_charts
     (id, name, description, chart_type, chart_category, config, created_by, created_at, updated_at, is_deleted)
     VALUES (
       '${chartId}',
@@ -147,18 +147,18 @@ export async function saveChart(
  */
 export async function getUserCharts(userId: string): Promise<SavedChart[]> {
   const query = `
-    SELECT 
-      c.id AS id, 
-      c.name AS name, 
-      c.description AS description, 
-      c.chart_type AS chart_type, 
-      c.chart_category AS chart_category, 
-      c.config AS config, 
-      c.created_by AS created_by, 
-      c.created_at AS created_at, 
-      c.updated_at AS updated_at, 
+    SELECT
+      c.id AS id,
+      c.name AS name,
+      c.description AS description,
+      c.chart_type AS chart_type,
+      c.chart_category AS chart_category,
+      c.config AS config,
+      c.created_by AS created_by,
+      c.created_at AS created_at,
+      c.updated_at AS updated_at,
       c.is_deleted AS is_deleted,
-      u.name AS created_by_name, 
+      u.name AS created_by_name,
       u.email AS created_by_email
     FROM clicksight.saved_charts c
     LEFT JOIN clicksight.users u ON c.created_by = u.id
@@ -190,18 +190,18 @@ export async function getSavedChartById(chartId: string): Promise<SavedChart | n
  */
 export async function getSharedCharts(userId: string): Promise<SavedChart[]> {
   const query = `
-    SELECT 
-      c.id AS id, 
-      c.name AS name, 
-      c.description AS description, 
-      c.chart_type AS chart_type, 
-      c.chart_category AS chart_category, 
-      c.config AS config, 
-      c.created_by AS created_by, 
-      c.created_at AS created_at, 
-      c.updated_at AS updated_at, 
+    SELECT
+      c.id AS id,
+      c.name AS name,
+      c.description AS description,
+      c.chart_type AS chart_type,
+      c.chart_category AS chart_category,
+      c.config AS config,
+      c.created_by AS created_by,
+      c.created_at AS created_at,
+      c.updated_at AS updated_at,
       c.is_deleted AS is_deleted,
-      u.name AS created_by_name, 
+      u.name AS created_by_name,
       u.email AS created_by_email,
       s.permission AS permission
     FROM clicksight.saved_charts c
@@ -312,7 +312,7 @@ export async function shareChart(
   });
 
   const query = `
-    INSERT INTO clicksight.chart_shares 
+    INSERT INTO clicksight.chart_shares
     (id, chart_id, shared_with_user_id, shared_by_user_id, permission, created_at, updated_at, is_deleted)
     VALUES ${values.join(', ')}
   `;
@@ -325,11 +325,11 @@ export async function shareChart(
  */
 export async function getChartShares(chartId: string): Promise<any[]> {
   const query = `
-    SELECT 
+    SELECT
       u.id as id,
-      u.email as email, 
-      u.name as name, 
-      u.avatar_url as avatar_url, 
+      u.email as email,
+      u.name as name,
+      u.avatar_url as avatar_url,
       s.permission as permission,
       s.shared_by_user_id as shared_by_user_id,
       s.shared_with_user_id as user_id
@@ -378,7 +378,7 @@ export async function createDashboard(
   const escapedDescription = description.replace(/'/g, "''");
 
   const query = `
-    INSERT INTO clicksight.dashboards 
+    INSERT INTO clicksight.dashboards
     (id, name, description, layout, created_by, created_at, updated_at, is_deleted)
     VALUES (
       '${dashboardId}',
@@ -401,8 +401,8 @@ export async function createDashboard(
  */
 export async function getUserDashboards(userId: string): Promise<Dashboard[]> {
   const query = `
-    SELECT 
-      d.id, d.name, d.description, d.layout, 
+    SELECT
+      d.id, d.name, d.description, d.layout,
       d.created_by, d.created_at, d.updated_at, d.is_deleted,
       u.name as created_by_name, u.email as created_by_email
     FROM clicksight.dashboards d
@@ -420,8 +420,8 @@ export async function getUserDashboards(userId: string): Promise<Dashboard[]> {
  */
 export async function getSharedDashboards(userId: string): Promise<Dashboard[]> {
   const query = `
-    SELECT 
-      d.id, d.name, d.description, d.layout, 
+    SELECT
+      d.id, d.name, d.description, d.layout,
       d.created_by, d.created_at, d.updated_at, d.is_deleted,
       u.name as created_by_name, u.email as created_by_email
     FROM clicksight.dashboards d
@@ -522,7 +522,7 @@ export async function addChartToDashboard(
   const relationId = uuidv4();
 
   const query = `
-    INSERT INTO clicksight.dashboard_charts 
+    INSERT INTO clicksight.dashboard_charts
     (id, dashboard_id, chart_id, position_x, position_y, width, height, created_at, updated_at, is_deleted)
     VALUES (
       '${relationId}',
@@ -546,7 +546,7 @@ export async function addChartToDashboard(
  */
 export async function getDashboardCharts(dashboardId: string): Promise<any[]> {
   const query = `
-    SELECT 
+    SELECT
       c.id,
       c.name,
       c.description,
@@ -577,7 +577,7 @@ export async function updateChartPosition(
 ): Promise<void> {
   const query = `
     ALTER TABLE clicksight.dashboard_charts
-    UPDATE 
+    UPDATE
       position_x = ${position.x},
       position_y = ${position.y},
       width = ${position.w},
@@ -624,7 +624,7 @@ export async function shareDashboard(
   });
 
   const query = `
-    INSERT INTO clicksight.dashboard_shares 
+    INSERT INTO clicksight.dashboard_shares
     (id, dashboard_id, shared_with_user_id, shared_by_user_id, permission, created_at, updated_at, is_deleted)
     VALUES ${values.join(', ')}
   `;
@@ -637,11 +637,11 @@ export async function shareDashboard(
  */
 export async function getDashboardShares(dashboardId: string): Promise<any[]> {
   const query = `
-    SELECT 
-      u.id, 
-      u.email, 
-      u.name, 
-      u.avatar_url, 
+    SELECT
+      u.id,
+      u.email,
+      u.name,
+      u.avatar_url,
       s.permission,
       s.shared_by_user_id
     FROM clicksight.dashboard_shares s
@@ -669,4 +669,3 @@ export async function revokeDashboardShare(
 
   await queryClickHouse(query);
 }
-

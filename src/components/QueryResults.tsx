@@ -37,7 +37,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
   const exportAsCSV = () => {
     try {
       const headers = result.columns.map(col => col.name).join(',');
-      const rows = result.data.map(row => 
+      const rows = result.data.map(row =>
         result.columns.map(col => {
           const value = row[col.name];
           if (value === null || value === undefined) return '';
@@ -49,7 +49,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
           return strValue;
         }).join(',')
       );
-      
+
       const csv = [headers, ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -58,7 +58,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
       link.download = `query-results-${Date.now()}.csv`;
       link.click();
       URL.revokeObjectURL(url);
-      
+
       message.success('Exported as CSV');
     } catch (error: any) {
       message.error('Failed to export CSV: ' + error.message);
@@ -75,7 +75,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
       link.download = `query-results-${Date.now()}.json`;
       link.click();
       URL.revokeObjectURL(url);
-      
+
       message.success('Exported as JSON');
     } catch (error: any) {
       message.error('Failed to export JSON: ' + error.message);
@@ -85,14 +85,14 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
   const exportAsTSV = () => {
     try {
       const headers = result.columns.map(col => col.name).join('\t');
-      const rows = result.data.map(row => 
+      const rows = result.data.map(row =>
         result.columns.map(col => {
           const value = row[col.name];
           if (value === null || value === undefined) return '';
           return String(value).replace(/\t/g, ' ');
         }).join('\t')
       );
-      
+
       const tsv = [headers, ...rows].join('\n');
       const blob = new Blob([tsv], { type: 'text/tab-separated-values;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -101,7 +101,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
       link.download = `query-results-${Date.now()}.tsv`;
       link.click();
       URL.revokeObjectURL(url);
-      
+
       message.success('Exported as TSV');
     } catch (error: any) {
       message.error('Failed to export TSV: ' + error.message);
@@ -132,11 +132,11 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
 
   return (
     <div style={{ marginTop: 24 }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 16 
+        marginBottom: 16
       }}>
         <Space>
           <div style={{ fontSize: 16, fontWeight: 500 }}>
@@ -152,7 +152,7 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
             )}
           </div>
         </Space>
-        
+
         <Dropdown overlay={exportMenu} trigger={['click']}>
           <Button icon={<DownloadOutlined />}>
             Export <DownOutlined />
@@ -185,4 +185,3 @@ const QueryResults: React.FC<QueryResultsProps> = ({ result, loading = false }) 
 };
 
 export default QueryResults;
-

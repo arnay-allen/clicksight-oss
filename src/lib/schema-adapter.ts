@@ -1,9 +1,9 @@
 /**
  * Schema Adapter Module
- * 
+ *
  * This module provides a schema abstraction layer that translates logical field names
  * to actual ClickHouse column names based on the schema configuration.
- * 
+ *
  * This allows ClickSight to work with any ClickHouse event table by simply
  * updating the schema.config.json file.
  */
@@ -43,10 +43,10 @@ export class SchemaAdapter {
 
   /**
    * Get column name for a logical field
-   * 
+   *
    * @param field - Logical field name
    * @returns Actual column name in ClickHouse
-   * 
+   *
    * Example: getColumn('event_name') → 'event_name'
    * Example: getColumn('timestamp') → 'server_timestamp'
    */
@@ -62,10 +62,10 @@ export class SchemaAdapter {
 
   /**
    * Get user identifier expression
-   * 
+   *
    * For type='single': Returns column name wrapped in backticks
    * For type='computed': Returns SQL expression as-is
-   * 
+   *
    * Example (single): `user_id`
    * Example (computed): if(pixel_properties_user_id != '', pixel_properties_user_id, pixel_device_id)
    */
@@ -83,13 +83,13 @@ export class SchemaAdapter {
 
   /**
    * Get property column expression
-   * 
+   *
    * For type='flat': Returns column name wrapped in backticks
    * For type='json': Returns JSONExtractString expression
-   * 
+   *
    * @param propertyName - Property name to access
    * @returns SQL expression to access the property
-   * 
+   *
    * Example (flat): `pathname`
    * Example (json): JSONExtractString(`properties`, 'pathname')
    */
@@ -115,10 +115,10 @@ export class SchemaAdapter {
 
   /**
    * Get list of available properties
-   * 
+   *
    * For type='flat': Returns configured property list
    * For type='json': Returns empty array (properties discovered dynamically)
-   * 
+   *
    * @returns Array of property names
    */
   getAvailableProperties(): string[] {
@@ -134,7 +134,7 @@ export class SchemaAdapter {
 
   /**
    * Check if property type is flat (for optimization)
-   * 
+   *
    * @returns true if properties are stored as flat columns
    */
   isFlatProperties(): boolean {
@@ -143,7 +143,7 @@ export class SchemaAdapter {
 
   /**
    * Check if property type is JSON
-   * 
+   *
    * @returns true if properties are stored in a JSON column
    */
   isJsonProperties(): boolean {
@@ -152,7 +152,7 @@ export class SchemaAdapter {
 
   /**
    * Get JSON column name (if using JSON properties)
-   * 
+   *
    * @returns JSON column name or null if not using JSON properties
    */
   getJsonColumn(): string | null {
@@ -164,7 +164,7 @@ export class SchemaAdapter {
 
   /**
    * Get schema config (for debugging)
-   * 
+   *
    * @returns Complete schema configuration object
    */
   getConfig(): SchemaConfig {
@@ -185,4 +185,3 @@ if (schemaAdapter.isFlatProperties()) {
   const propCount = schemaAdapter.getAvailableProperties().length;
   console.log(`   Available Properties: ${propCount}`);
 }
-

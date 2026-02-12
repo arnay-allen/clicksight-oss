@@ -1,0 +1,361 @@
+/* Ant Design Dark Theme Overrides */
+
+/* Layout */
+.ant-layout {
+  background: #0A0A0F;
+}
+
+.ant-layout-sider {
+  background: #16161F;
+}
+
+/* Menu */
+.ant-menu-dark {
+  background: #16161F;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #9D6CFF;
+  color: #FFFFFF;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+  background-color: #1E1E2D;
+  color: #9D6CFF;
+}
+
+/* Cards */
+.ant-card {
+  background: #16161F;
+  border: 1px solid #2A2A3A;
+  color: #FFFFFF;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid #2A2A3A;
+  color: #FFFFFF;
+}
+
+/* Buttons */
+.ant-btn-primary {
+  background: linear-gradient(135deg, #9D6CFF 0%, #7B4FE0 100%);
+  border: none;
+  color: #FFFFFF;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, #B894FF 0%, #9D6CFF 100%);
+}
+
+.ant-btn-default {
+  background: #16161F;
+  border: 1px solid #3A3A4A;
+  color: #A8A8B8;
+}
+
+.ant-btn-default:hover {
+  background: #1E1E2D;
+  border-color: #9D6CFF;
+  color: #9D6CFF;
+}
+
+.ant-btn-dashed {
+  background: transparent;
+  border: 1px dashed #3A3A4A;
+  color: #A8A8B8;
+}
+
+.ant-btn-dashed:hover {
+  border-color: #9D6CFF;
+  color: #9D6CFF;
+}
+
+/* Input Fields */
+.ant-input,
+.ant-input-number,
+.ant-input-number-input,
+.ant-picker {
+  background: #16161F;
+  border: 1px solid #3A3A4A;
+  color: #FFFFFF;
+}
+
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-picker:hover {
+  border-color: #9D6CFF;
+}
+
+.ant-input:focus,
+.ant-input-number:focus,
+.ant-picker:focus,
+.ant-input-focused,
+.ant-input-number-focused,
+.ant-picker-focused {
+  border-color: #9D6CFF;
+  box-shadow: 0 0 0 2px rgba(157, 108, 255, 0.2);
+}
+
+.ant-input::placeholder {
+  color: #6B6B7B;
+}
+
+/* Select Dropdown */
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: #16161F;
+  border: 1px solid #3A3A4A;
+  color: #FFFFFF;
+}
+
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #9D6CFF;
+}
+
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: #9D6CFF;
+  box-shadow: 0 0 0 2px rgba(157, 108, 255, 0.2);
+}
+
+.ant-select-dropdown {
+  background: #1E1E2D;
+  border: 1px solid #3A3A4A;
+}
+
+.ant-select-item {
+  color: #A8A8B8;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: #9D6CFF;
+  color: #FFFFFF;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: #1E1E2D;
+  color: #9D6CFF;
+}
+
+.ant-select-multiple .ant-select-selection-item {
+  background: #9D6CFF;
+  border: none;
+  color: #FFFFFF;
+}
+
+/* Date Picker */
+.ant-picker-dropdown {
+  background: #1E1E2D;
+}
+
+.ant-picker-panel-container {
+  background: #1E1E2D;
+  border: 1px solid #3A3A4A;
+}
+
+.ant-picker-header {
+  border-bottom: 1px solid #3A3A4A;
+  color: #FFFFFF;
+}
+
+.ant-picker-content th {
+  color: #A8A8B8;
+}
+
+.ant-picker-cell {
+  color: #A8A8B8;
+}
+
+.ant-picker-cell-in-view {
+  color: #FFFFFF;
+}
+
+.ant-picker-cell:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end) .ant-picker-cell-inner {
+  background: #1E1E2D;
+}
+
+.ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-range-end .ant-picker-cell-inner {
+  background: #9D6CFF;
+  color: #FFFFFF;
+}
+
+.ant-picker-cell-in-range::before {
+  background: rgba(157, 108, 255, 0.1);
+}
+
+/* Tags */
+.ant-tag {
+  background: #9D6CFF;
+  border: none;
+  color: #FFFFFF;
+}
+
+/* Modal */
+.ant-modal-content {
+  background: #1E1E2D;
+  border: 1px solid #3A3A4A;
+}
+
+.ant-modal-header {
+  background: #1E1E2D;
+  border-bottom: 1px solid #3A3A4A;
+}
+
+.ant-modal-title {
+  color: #FFFFFF;
+}
+
+.ant-modal-body {
+  color: #A8A8B8;
+}
+
+.ant-modal-footer {
+  border-top: 1px solid #3A3A4A;
+}
+
+/* Tooltip */
+.ant-tooltip-inner {
+  background: #1E1E2D;
+  border: 1px solid #3A3A4A;
+  color: #FFFFFF;
+}
+
+.ant-tooltip-arrow-content {
+  background: #1E1E2D;
+}
+
+/* Table */
+.ant-table {
+  background: #16161F;
+  color: #FFFFFF;
+}
+
+.ant-table-thead > tr > th {
+  background: #1E1E2D;
+  border-bottom: 1px solid #3A3A4A;
+  color: #A8A8B8;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #2A2A3A;
+  color: #FFFFFF;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #1E1E2D;
+}
+
+.ant-table-tbody > tr:nth-child(even) {
+  background: rgba(30, 30, 45, 0.3);
+}
+
+/* Spin */
+.ant-spin-dot-item {
+  background-color: #9D6CFF;
+}
+
+/* Alert */
+.ant-alert-error {
+  background: rgba(245, 34, 45, 0.1);
+  border: 1px solid #F5222D;
+}
+
+.ant-alert-error .ant-alert-message {
+  color: #F5222D;
+}
+
+.ant-alert-info {
+  background: rgba(24, 144, 255, 0.1);
+  border: 1px solid #1890FF;
+}
+
+.ant-alert-info .ant-alert-message {
+  color: #1890FF;
+}
+
+/* Radio */
+.ant-radio-button-wrapper {
+  background: #16161F;
+  border: 1px solid #3A3A4A;
+  color: #A8A8B8;
+}
+
+.ant-radio-button-wrapper:hover {
+  color: #9D6CFF;
+}
+
+.ant-radio-button-wrapper-checked {
+  background: #9D6CFF;
+  border-color: #9D6CFF;
+  color: #FFFFFF;
+}
+
+.ant-radio-button-wrapper-checked:hover {
+  background: #7B4FE0;
+  border-color: #7B4FE0;
+}
+
+/* Statistic */
+.ant-statistic-title {
+  color: #A8A8B8;
+}
+
+.ant-statistic-content {
+  color: #FFFFFF;
+}
+
+/* Divider */
+.ant-divider {
+  border-top-color: #2A2A3A;
+}
+
+/* Space */
+.ant-space-item {
+  color: #FFFFFF;
+}
+
+/* Pagination */
+.ant-pagination-item {
+  background: #16161F;
+  border: 1px solid #3A3A4A;
+}
+
+.ant-pagination-item a {
+  color: #A8A8B8;
+}
+
+.ant-pagination-item:hover {
+  border-color: #9D6CFF;
+}
+
+.ant-pagination-item:hover a {
+  color: #9D6CFF;
+}
+
+.ant-pagination-item-active {
+  background: #9D6CFF;
+  border-color: #9D6CFF;
+}
+
+.ant-pagination-item-active a {
+  color: #FFFFFF;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #16161F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3A3A4A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9D6CFF;
+}

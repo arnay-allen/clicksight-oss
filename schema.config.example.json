@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "clickhouse": {
+    "database": "analytics",
+    "table": "user_events"
+  },
+  "schema": {
+    "columns": {
+      "event_name": "event_type",
+      "timestamp": "event_time",
+      "date": "event_date",
+      "user_id": "user_id",
+      "session_id": "session_id"
+    },
+    "user_identifier": {
+      "type": "single",
+      "column": "user_id"
+    },
+    "properties": {
+      "type": "flat",
+      "columns": [
+        "page_url",
+        "page_title",
+        "referrer",
+        "product_id",
+        "product_name",
+        "product_category",
+        "product_price",
+        "cart_value",
+        "order_id",
+        "order_total",
+        "payment_method",
+        "country",
+        "city",
+        "device_type",
+        "browser",
+        "browser_version",
+        "os",
+        "os_version",
+        "screen_width",
+        "screen_height",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+      ]
+    }
+  }
+}

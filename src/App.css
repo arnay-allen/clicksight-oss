@@ -1,0 +1,107 @@
+/* ClickSight Dark Theme - Global App Styles */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #0A0A0F;
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #0A0A0F;
+}
+
+.ant-layout-content {
+  background: #0A0A0F;
+}
+
+/* Focus ring styles */
+*:focus-visible {
+  outline: 2px solid #9D6CFF;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 250ms ease-in-out, border-color 250ms ease-in-out, color 250ms ease-in-out;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(157, 108, 255, 0.3);
+  color: #FFFFFF;
+}
+
+/* Link styles */
+a {
+  color: #9D6CFF;
+  text-decoration: none;
+  transition: color 150ms ease-in-out;
+}
+
+a:hover {
+  color: #B894FF;
+}
+
+/* Code and pre */
+code {
+  background: #16161F;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: #9D6CFF;
+}
+
+pre {
+  background: #16161F;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid #2A2A3A;
+}
+
+/* Remove default button styles */
+button {
+  font-family: inherit;
+}
+
+/* Utility classes */
+.text-muted {
+  color: #6B6B7B;
+}
+
+.text-secondary {
+  color: #A8A8B8;
+}
+
+.text-primary {
+  color: #9D6CFF;
+}
+
+.bg-card {
+  background: #16161F;
+}
+
+.bg-elevated {
+  background: #1E1E2D;
+}
+
+.border-subtle {
+  border: 1px solid #2A2A3A;
+}
+
+.border-elevated {
+  border: 1px solid #3A3A4A;
+}
